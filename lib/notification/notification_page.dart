@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkz/notification/component/notification_card.dart';
 import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 
@@ -22,6 +23,16 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
         backgroundColor: Colors.white,
         title: const SemiBoldText(text: 'Thông báo', fontSize: 20, color: AppColor.forText),
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.only(top: 10,bottom: 20, left: 15, right: 15),
+        itemBuilder: (context, index) {
+          return const Padding(
+            padding: EdgeInsets.only(top: 8.0),
+            child: NotificationCard(),
+          );
+        },
+        itemCount: 5,
       ),
     );
   }
