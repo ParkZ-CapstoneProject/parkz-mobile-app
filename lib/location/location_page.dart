@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart' as latLng;
+import 'package:latlong2/latlong.dart';
+import 'package:parkz/utils/constanst.dart';
+import 'package:parkz/utils/text/semi_bold.dart';
 
 class LocationPage extends StatefulWidget {
   const LocationPage({Key? key}) : super(key: key);
@@ -11,7 +13,6 @@ class LocationPage extends StatefulWidget {
 
 class _LocationPageState extends State<LocationPage> {
   final String apiKey = 'ulGtxtkmCd8rrbnU2bzRW5FBKYkbKkFL';
-  MapController mapController = MapController();
 
 
 
@@ -22,23 +23,24 @@ class _LocationPageState extends State<LocationPage> {
     return MaterialApp(
       title: "TomTom Map",
       home: Scaffold(
+        appBar: AppBar(
+          bottomOpacity: 0.0,
+          elevation: 0.0,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          title: const SemiBoldText(text: 'Vị trí', fontSize: 20, color: AppColor.forText),
+        ),
         body: Center(
             child: Stack(
               children: <Widget>[
                 FlutterMap(
-                  mapController: mapController,
-
-
                   options: MapOptions(
                     rotation: 0.0,
-                      center: latLng.LatLng(52.376372, 4.908066),
+                      center: LatLng(10.762622, 106.660172),
                       zoom: 13.0),
 
-                  layers: [
-
+                  nonRotatedLayers: [
                      TileLayerOptions(
-
-
                       urlTemplate: "https://api.tomtom.com/map/1/tile/basic/main/"
                           "{z}/{x}/{y}.png?key={apiKey}",
                       additionalOptions: {"apiKey": apiKey},

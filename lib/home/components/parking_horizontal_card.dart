@@ -69,7 +69,7 @@ class _ParkingCardHomeState extends State<ParkingCardHome> {
                     flex: 1,
                     child: ClipRRect(
                       borderRadius:  BorderRadius.only(topLeft: Radius.circular(cardBorder), bottomLeft:Radius.circular(cardBorder) ),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.imagePath,
                         fit: BoxFit.cover,
                         height: cardHeight,

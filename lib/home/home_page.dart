@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  const TitleList(title: 'Gần đây', page: ParkingListPage()),
+                  const TitleList(title: 'Gần bạn', page: ParkingListPage()),
                   SizedBox(
                     height: 310,
                     child: ListView.builder(
@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                         return  NearByCard(
                           indexRoom: index,
                           title: 'Phố đi bộ Nguyễn Huệ',
-                          imagePath: 'assets/image/home_banner.png',
+                          imagePath: 'https://images.pexels.com/photos/15125376/pexels-photo-15125376.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                           rating: 5.0,
                           price: '100',
                           address: '123 Nguyễn Huệ, Quận 1',
@@ -116,14 +116,14 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  const TitleList(title: 'Các bãi đỗ xe gần đây', page: ParkingListPage()),
+                  const TitleList(title: 'Các bãi đỗ xe yêu thích', page: ParkingListPage()),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return ParkingCardHome(
                         title: 'Takashimaya - 94 Nam Kỳ Khởi Nghĩa ',
-                        imagePath: 'assets/image/home_banner.png',
+                        imagePath: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80',
                         rating: 5,
                         price: '20.000',
                         address: '50/1 Thành Thái, Phường 12, Quận 10, Thành phố Hồ Chí Minh, Thành Phố',

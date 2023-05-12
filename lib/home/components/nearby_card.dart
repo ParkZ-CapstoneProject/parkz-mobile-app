@@ -70,7 +70,7 @@ class _NearByCardState extends State<NearByCard> {
                 // Phần ảnh của card
                 ClipRRect(
                   borderRadius: const BorderRadius.only( topRight:  Radius.circular(7.0), topLeft:  Radius.circular(7.0)),
-                  child: Image.asset(
+                  child: Image.network(
                     widget.imagePath,
                     fit: BoxFit.cover,
                     height: 120,
