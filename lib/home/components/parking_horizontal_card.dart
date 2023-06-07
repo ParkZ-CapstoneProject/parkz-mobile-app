@@ -36,7 +36,7 @@ class _ParkingCardHomeState extends State<ParkingCardHome> {
 
   @override
   Widget build(BuildContext context) {
-    double cardHeight = 120;
+    double cardHeight = 110;
     double cardBorder = 12;
 
     return GestureDetector(
@@ -82,42 +82,44 @@ class _ParkingCardHomeState extends State<ParkingCardHome> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 16.0, top: 8, bottom: 8, right: 18),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 18.0),
-                            child: SemiBoldText(text: widget.title, fontSize: 17, color: Colors.black, maxLine: 1),
-                          ),
-                          const SizedBox(height: 8,),
                           Flexible(
                             flex: 2,
-                            child: RegularText(text:  widget.address, fontSize: 13, color: Colors.black, maxLine: 2,
-                            ),
-                          ),
-                          widget.address.length > 32 ? const SizedBox(height: 0,) : const SizedBox(height: 10,),
-
-                          Align(
-                            heightFactor: 2.25,
-                            alignment: Alignment.bottomCenter,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    RegularText(text: widget.rating.toString(), fontSize: 13 , color: AppColor.forText),
-                                    const Icon(Icons.star_rounded, color: AppColor.orange, size: 20,),
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 18.0),
+                                  child: SemiBoldText(text: widget.title, fontSize: 17, color: Colors.black, maxLine: 1, align: TextAlign.left),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    const RegularText(text: 'Chỉ từ ', fontSize: 13, color: AppColor.forText),
-                                    SemiBoldText(text: '${widget.price}đ', fontSize: 17, color: AppColor.forText),
-                                  ],
+                                const SizedBox(height: 8,),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 16.0),
+                                  child: RegularText(text:  widget.address, fontSize: 13, color: Colors.black, maxLine: 2,
+                                  ),
                                 ),
                               ],
                             ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  RegularText(text: widget.rating.toString(), fontSize: 13 , color: AppColor.forText),
+                                  const Icon(Icons.star_rounded, color: AppColor.orange, size: 20,),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  const RegularText(text: 'Chỉ từ ', fontSize: 13, color: AppColor.forText),
+                                  SemiBoldText(text: '${widget.price}đ', fontSize: 17, color: AppColor.forText),
+                                ],
+                              ),
+                            ],
                           )
                         ],
                       ),

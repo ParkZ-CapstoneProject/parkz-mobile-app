@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 
 class IntroductionBuilder1 extends StatelessWidget {
@@ -12,7 +13,6 @@ class IntroductionBuilder1 extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final imageHeight = screenHeight / 3;
 
-    const String background = 'assets/image/splash_1.png';
     const String banner = 'assets/image/splash1.svg';
     const String title = 'Title';
     const String description =
@@ -20,9 +20,13 @@ class IntroductionBuilder1 extends StatelessWidget {
 
     return Container(
       decoration: const BoxDecoration(
-        image:
-            DecorationImage(image: AssetImage(background), fit: BoxFit.cover),
+        gradient: LinearGradient(colors: [
+          AppColor.navy,
+          AppColor.forText
+        ],
+        ),
       ),
+
       child: Column(
         children: [
           const SizedBox(height: 150.0),

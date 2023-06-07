@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  const TitleList(title: 'Các bãi đỗ xe yêu thích', page: ParkingListPage()),
+                  const TitleList(title: 'Danh sách nổi bật', page: ParkingListPage()),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),

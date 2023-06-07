@@ -38,7 +38,6 @@ class _LocationPageState extends State<LocationPage> {
                     rotation: 0.0,
                       center: LatLng(10.762622, 106.660172),
                       zoom: 13.0),
-
                   nonRotatedLayers: [
                      TileLayerOptions(
                       urlTemplate: "https://api.tomtom.com/map/1/tile/basic/main/"
