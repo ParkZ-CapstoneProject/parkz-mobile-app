@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  const BottomBar(selectedInit: 1)),
+                        MaterialPageRoute(builder: (context) =>  const MyBottomBar(selectedInit: 1)),
                       );
                     },
                   ),

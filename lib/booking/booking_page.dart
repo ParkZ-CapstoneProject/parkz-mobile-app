@@ -428,12 +428,11 @@ class TicketData extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () async {
-                  final uri = Uri.parse(path);
 
                   await Share.share(path);
                 },
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.share_outlined),
                     SizedBox(width: 5,),
                     RegularText(text: 'Chia sẻ', fontSize: 16, color: AppColor.forText)

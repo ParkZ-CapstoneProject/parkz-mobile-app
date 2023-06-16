@@ -482,7 +482,9 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                 ),
                 MyButton(
                   text: 'Áp dụng',
-                  function: () {},
+                  function: () {
+                    Navigator.pop(context);
+                  },
                   textColor: Colors.white,
                   backgroundColor: AppColor.navy,
                   minWidth: double.infinity,

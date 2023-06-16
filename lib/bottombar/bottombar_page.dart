@@ -6,16 +6,16 @@ import 'package:parkz/home/home_page.dart';
 import 'package:parkz/location/location_page.dart';
 import 'package:parkz/utils/constanst.dart';
 
-class BottomBar extends StatefulWidget {
+class MyBottomBar extends StatefulWidget {
   final int selectedInit;
 
-  const BottomBar({Key? key, required this.selectedInit}) : super(key: key);
+  const MyBottomBar({Key? key, required this.selectedInit}) : super(key: key);
 
   @override
-  State<BottomBar> createState() => _BottomBarState();
+  State<MyBottomBar> createState() => _MyBottomBarState();
 }
 
-class _BottomBarState extends State<BottomBar> {
+class _MyBottomBarState extends State<MyBottomBar> {
   late  int _selectedIndex = widget.selectedInit;
   static const List<Widget> _pages = <Widget>[
     HomePage(),

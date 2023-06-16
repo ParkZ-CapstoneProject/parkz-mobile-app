@@ -1,94 +1,55 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:parkz/authentication/authentication_page.dart';
+import 'package:parkz/bottombar/bottombar_page.dart';
+import 'package:parkz/identification/card_identification_page.dart';
+import 'package:parkz/model/login_response.dart';
+import 'package:parkz/network/api.dart';
 import 'package:parkz/utils/button/button_widget.dart';
 import 'package:parkz/utils/constanst.dart';
+import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/text/medium.dart';
+import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 class OtpPage extends StatefulWidget {
-  const OtpPage({Key? key}) : super(key: key);
+  final String phone;
+  const OtpPage({Key? key, required this.phone}) : super(key: key);
 
   @override
   State<OtpPage> createState() => _OtpPageState();
 }
 
-class _OtpPageState extends State<OtpPage> {
-  final List<FocusNode> _focusNodes = [
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-  ];
+class _OtpPageState extends State<OtpPage> with CodeAutoFill {
+  String codeValue = "";
 
-  final TextEditingController _firstController = TextEditingController();
-  final TextEditingController _secondController = TextEditingController();
-  final TextEditingController _thirdController = TextEditingController();
-  final TextEditingController _fourthController = TextEditingController();
-  final TextEditingController _fifthController = TextEditingController();
-  final TextEditingController _sixthController = TextEditingController();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
   @override
-  void dispose() {
-    _firstController.dispose();
-    _secondController.dispose();
-    _thirdController.dispose();
-    _fourthController.dispose();
-    _fifthController.dispose();
-    _sixthController.dispose();
-    super.dispose();
+  void codeUpdated() {
+    print("Update code $code");
+    setState(() {
+      print("codeUpdated");
+    });
   }
 
-  Widget _buildOtpBox(int position, FocusNode focusNode) {
-    TextEditingController? controller;
-    switch (position) {
-      case 1:
-        controller = _firstController;
-        break;
-      case 2:
-        controller = _secondController;
-        break;
-      case 3:
-        controller = _thirdController;
-        break;
-      case 4:
-        controller = _fourthController;
-        break;
-      case 5:
-        controller = _fifthController;
-        break;
-      case 6:
-        controller = _sixthController;
-        break;
-    }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    listenOtp();
 
-    return Expanded(
-      child: TextFormField(
-        controller: controller,
-        focusNode: focusNode,
-        keyboardType: TextInputType.number,
-        maxLength: 1,
-        textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 17),
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(bottom: 5, left: 4),
-          counter: const Offstage(),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.orange, width: 2),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.orange, width: 2),
-          ),
-        ),
-        onChanged: (value) {
-          if (value.length == 1) {
-            focusNode.nextFocus();
-          }
-        },
-      ),
-    );
+  }
+
+  void listenOtp() async {
+    await SmsAutoFill().unregisterListener();
+    listenForCode();
+
+    await SmsAutoFill().listenForCode;
+    print("OTP listen Called");
   }
 
   @override
@@ -111,43 +72,72 @@ class _OtpPageState extends State<OtpPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:  const [
-                      SemiBoldText(
-                          text: 'Nhập mã OTP',
-                          color: Colors.black,
-                          align: TextAlign.left,
-                          fontSize: 20,
-                          maxLine: 2),
-                      SizedBox(height: 8,),
-                      MediumText(
-                          text: 'Mã OTP được gửi tới số 0773834602',
-                          color: Colors.blueGrey,
-                          maxLine: 2,
-                          fontSize: 12),
-                    ],
-                  ),
-                  const SizedBox(height: 30,),
+                  const SemiBoldText(
+                      text: 'Nhập mã OTP',
+                      color: Colors.black,
+                      align: TextAlign.left,
+                      fontSize: 24,
+                      maxLine: 2),
                   SizedBox(
-                    height: 48,
-                    child: Row(
-                      children: [
-                        _buildOtpBox(1, _focusNodes[0]),
-                        const SizedBox(width: 16),
-                        _buildOtpBox(2, _focusNodes[1]),
-                        const SizedBox(width: 16),
-                        _buildOtpBox(3, _focusNodes[2]),
-                        const SizedBox(width: 16),
-                        _buildOtpBox(4, _focusNodes[3]),
-                        const SizedBox(width: 16),
-                        _buildOtpBox(5, _focusNodes[4]),
-                        const SizedBox(width: 16),
-                        _buildOtpBox(6, _focusNodes[5]),
-                      ],
+                    height: 8,
+                  ),
+                  MediumText(
+                      text: 'Mã OTP được gửi tới số ${widget.phone}',
+                      color: Colors.blueGrey,
+                      maxLine: 2,
+                      fontSize: 14),
+                  const RegularText(
+                      text: 'Không phải số này ? ',
+                      fontSize: 14,
+                      color: Colors.blue),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Center(
+                    child: PinFieldAutoFill(
+                      autoFocus: true,
+                      cursor: Cursor(
+                        width: 2,
+                        height: 30,
+                        color: AppColor.orange,
+                        radius: const Radius.circular(1),
+                        enabled: true,
+                      ),
+                      keyboardType: TextInputType.number,
+                      decoration: BoxLooseDecoration(
+                        textStyle: const TextStyle(
+                            color: AppColor.forText,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600),
+                        strokeColorBuilder:
+                            const FixedColorBuilder(AppColor.orange),
+                      ),
+                      currentCode: codeValue,
+
+                      onCodeChanged: (code) {
+                        print("onCodeChanged $code");
+                        setState(() {
+                          codeValue = code.toString();
+                        });
+                      },
+                      onCodeSubmitted: (val) {
+                        print("onCodeSubmitted $val");
+                        codeValue = val;
+                      },
                     ),
                   ),
-                  const SizedBox(height: 40,),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  InkWell(
+                    onTap: listenOtp,
+                      child: const SemiBoldText(
+                          text: 'Gửi lại mã OTP',
+                          fontSize: 15,
+                          color: AppColor.fadeText)),
+                  const SizedBox(
+                    height: 40,
+                  ),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: SizedBox(
@@ -156,8 +146,39 @@ class _OtpPageState extends State<OtpPage> {
                           text: 'Tiếp tục',
                           textColor: AppColor.navyPale,
                           backgroundColor: AppColor.navy,
-                          function: () {
+                          function: () async {
+                            if(codeValue.length < 6){
+                              Utils(context).showErrorSnackBar('Mã OTP không được bỏ trống');
+                            }
+                            else{
+                              try{
+                                Utils(context).startLoading();
+                                PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: AuthenticationPage.verify, smsCode: codeValue);
+                                // Sign the user in (or link) with the credential
+                                await auth.signInWithCredential(credential);
 
+                                final prefs = await SharedPreferences.getInstance();
+                                String phone = prefs.getString('phoneRegister')!;
+                                LoginResponse reponse = await login(phone);
+                                Utils(context).stopLoading();
+                                if(reponse.data == null){
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const CardIdentificationPage()),
+                                  );
+                                }
+                                else {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const MyBottomBar(selectedInit: 0)),
+                                  );
+                                };
+                              }catch(e){
+                                Utils(context).showErrorSnackBar('Mã OTP không hợp lệ');
+                                Utils(context).stopLoading();
+                              }
+
+                            }
                           },
                         )),
                   )
@@ -169,5 +190,5 @@ class _OtpPageState extends State<OtpPage> {
       ),
     );
   }
-
 }
+

@@ -47,7 +47,7 @@ class _AnimationButtonState extends State<AnimationButton> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  const BottomBar(selectedInit: 0)),
+                  MaterialPageRoute(builder: (context) =>  const MyBottomBar(selectedInit: 0)),
                 );
               },
               style: ElevatedButton.styleFrom(

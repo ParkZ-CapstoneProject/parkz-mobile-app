@@ -66,7 +66,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) =>  const BottomBar(selectedInit: 0)),
+                            MaterialPageRoute(builder: (context) =>  const MyBottomBar(selectedInit: 0)),
                           );
                         },
                         child: const SizedBox(height: 80, width: 80,

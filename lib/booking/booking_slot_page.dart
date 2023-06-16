@@ -26,7 +26,7 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
 
   @override
   Widget build(BuildContext context) {
-    String? dropdownValue = 'Car';
+    String? dropdownValue = 'Tầng 1';
     int _selectedSlotIndex = -1;
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +68,7 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
                             // print('dropdownValue ' + dropdownValue!);
                           });
                         },
-                        items: <String>['Car', 'Train', 'Bus', 'Flight']
+                        items: <String>['Tầng 1', 'Tầng 2', 'Tầng 3', 'Tầng 4']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,

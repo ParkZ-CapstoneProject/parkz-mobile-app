@@ -45,7 +45,7 @@ class _ActivityPageState extends State<ActivityPage> with SingleTickerProviderSt
             controller: _tabController,
             indicatorColor: AppColor.orange,
             labelColor: AppColor.forText,
-            tabs: [
+            tabs: const [
               Tab(text: "Upcoming"),
               Tab(text: "Lịch sử"),
             ],

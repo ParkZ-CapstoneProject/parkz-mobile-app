@@ -16,10 +16,9 @@ class _ActivityCardState extends State<ActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       height: 136,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -35,20 +34,20 @@ class _ActivityCardState extends State<ActivityCard> {
             children: [
               Row(
                 children: [
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   SvgPicture.asset(
                     'assets/icon/car.svg',
                     width: 30,
                     height: 30,
                   ),
                   const SizedBox(width: 16),
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
                         height: 27,
                         child: Row(
-                          children: const [
+                          children: [
                             SemiBoldText(
                                 text: '19/04/2023',
                                 color: AppColor.forText,
@@ -67,7 +66,7 @@ class _ActivityCardState extends State<ActivityCard> {
                       ),
                       SizedBox(height: 5,),
 
-                      const RegularText(
+                      RegularText(
                         text: 'KIA / 75A-165.19',
                         color: AppColor.forText,
                         fontSize: 13,
