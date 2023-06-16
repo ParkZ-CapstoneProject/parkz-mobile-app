@@ -12,12 +12,11 @@ import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/text/medium.dart';
 import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class OtpPage extends StatefulWidget {
-  final String phone;
-  const OtpPage({Key? key, required this.phone}) : super(key: key);
+
+  const OtpPage({Key? key}) : super(key: key);
 
   @override
   State<OtpPage> createState() => _OtpPageState();
@@ -82,7 +81,7 @@ class _OtpPageState extends State<OtpPage> with CodeAutoFill {
                     height: 8,
                   ),
                   MediumText(
-                      text: 'Mã OTP được gửi tới số ${widget.phone}',
+                      text: 'Mã OTP được gửi tới số ${AuthenticationPage.phone}',
                       color: Colors.blueGrey,
                       maxLine: 2,
                       fontSize: 14),
@@ -156,10 +155,7 @@ class _OtpPageState extends State<OtpPage> with CodeAutoFill {
                                 PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: AuthenticationPage.verify, smsCode: codeValue);
                                 // Sign the user in (or link) with the credential
                                 await auth.signInWithCredential(credential);
-
-                                final prefs = await SharedPreferences.getInstance();
-                                String phone = prefs.getString('phoneRegister')!;
-                                LoginResponse reponse = await login(phone);
+                                LoginResponse reponse = await login(AuthenticationPage.phone);
                                 Utils(context).stopLoading();
                                 if(reponse.data == null){
                                   await Navigator.push(
@@ -174,8 +170,8 @@ class _OtpPageState extends State<OtpPage> with CodeAutoFill {
                                   );
                                 };
                               }catch(e){
-                                Utils(context).showErrorSnackBar('Mã OTP không hợp lệ');
                                 Utils(context).stopLoading();
+                                Utils(context).showErrorSnackBar('Mã OTP không hợp lệ');
                               }
 
                             }

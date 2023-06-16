@@ -6,8 +6,6 @@ import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/text/medium.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
 import '../utils/button/button_widget.dart';
 
@@ -18,6 +16,7 @@ class AuthenticationPage extends StatefulWidget {
   State<AuthenticationPage> createState() => _AuthenticationPageState();
 
   static String verify = "";
+  static String phone = "";
 }
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
@@ -31,33 +30,41 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
    submit() async {
     if (mobileNumber.text == "") return;
+    RegExp regex = RegExp(r'(84|0[3|5|7|8|9])+([0-9]{8})\b');
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('phoneRegister', mobileNumber.text);
+    if (regex.hasMatch(mobileNumber.text)) {
+      Utils(context).startLoading();
+      //set phone value
+      AuthenticationPage.phone = mobileNumber.text;
 
-    var appSignatureID = await SmsAutoFill().getAppSignature;
-    Map sendOtpData = {
-      "mobile_number": mobileNumber.text,
-      "app_signature_id": appSignatureID
-    };
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: '+84 ${mobileNumber.text.substring(1)}',
-      verificationCompleted: (PhoneAuthCredential credential) {
-        Utils(context).showSuccessSnackBar('Thành công');
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        Utils(context).showErrorSnackBar('Xác thực thất bại' + e.toString());
-        print('fail ne: ' + e.toString());
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        AuthenticationPage.verify = verificationId;
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  OtpPage(phone: mobileNumber.text,)),
-        );
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        Utils(context).showErrorSnackBar('Xác thực thất bại');
-      },
-    );
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: '+84 ${mobileNumber.text.substring(1)}',
+
+        verificationCompleted: (PhoneAuthCredential credential) {
+          Utils(context).showSuccessSnackBar('Thành công');
+        },
+
+        verificationFailed: (FirebaseAuthException e) {
+          Utils(context).stopLoading();
+          Utils(context).showErrorSnackBar('Xác thực thất bại: $e');
+        },
+
+        codeSent: (String verificationId, int? resendToken) {
+          AuthenticationPage.verify = verificationId;
+
+          Utils(context).stopLoading();
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  const OtpPage()),
+          );
+        },
+        //Chưa biết làm gì
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+
+    } else {
+      Utils(context).showErrorSnackBar('Số điện thoại không hợp lệ');
+    }
+
+
 
   }
 
@@ -102,21 +109,16 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                   ),
                    TextField(
                     controller: mobileNumber,
-                    keyboardType: TextInputType.number,
+                     autofocus: true,
+                    keyboardType: TextInputType.phone,
                     decoration: const InputDecoration(
                       hintText: 'Nhập số điện thoại',
                       hintStyle: TextStyle(color: AppColor.navy,fontWeight: FontWeight.w600, ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColor.orange),
-                      ),
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: AppColor.orange),
                       ),
                     ),
-                  ),
-
-
-
+                   ),
                   const SizedBox(height: 40,),
                   Align(
                     alignment: Alignment.bottomCenter,

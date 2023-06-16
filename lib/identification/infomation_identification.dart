@@ -48,7 +48,7 @@ class _InformationIdentificationState extends State<InformationIdentification> {
     idIssuedBy.text = widget.userInfo.recognizedData!.issueBy!;
 
     // Show snack bar
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       showSnack(context, widget.userInfo.recognizedData?.warningCode);
     });
   }
@@ -58,61 +58,33 @@ class _InformationIdentificationState extends State<InformationIdentification> {
     return Scaffold(
       backgroundColor: AppColor.navyPale,
       bottomNavigationBar: Padding(
-        padding:
-            const EdgeInsets.only(top: 18.0, bottom: 18, right: 36, left: 36),
+        padding: const EdgeInsets.only(top: 18.0, bottom: 18, right: 36, left: 36),
+
         child: MyButton(
             text: 'Tiếp tục',
-            function: isChecked == false
-                ? null
-                : () async {
-              Utils(context).startLoading();
-                    Register response = await authentication(
-                        phoneController.text,
-                        nameController.text,
-                        dateOfBirthController.text,
-                        idDate.text,
-                        genderController.text,
-                        idCardController.text,
-                        idIssuedBy.text,
-                        addressController.text);
-              Utils(context).stopLoading();
-                    if (response.statusCode == 200){
-                      Utils(context).showSuccessSnackBar('Đăng ký thành công');
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                            const MyBottomBar(selectedInit: 0)),
-                      );
-                    }else{
-                      Utils(context).showErrorSnackBar('Đăng ký thất bại');
-                    }
-
-                  },
+            function: isChecked == false ? null : register(),
             textColor: Colors.white,
             backgroundColor: AppColor.navy),
       ),
+
       appBar: AppBar(
         elevation: 0.0,
         leading: const BackButton(color: AppColor.forText),
         backgroundColor: Colors.white,
-        title: const SemiBoldText(
-            text: 'Xác thực thông tin', fontSize: 20, color: AppColor.forText),
+        title: const SemiBoldText(text: 'Xác thực thông tin', fontSize: 20, color: AppColor.forText),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 18,
-            ),
+            const SizedBox(height: 18,),
+
             const Padding(
               padding: EdgeInsets.only(left: 18.0, top: 8, bottom: 8),
-              child: SemiBoldText(
-                  text: 'Thông tin tài khoản',
-                  fontSize: 17,
-                  color: AppColor.forText),
+              child: SemiBoldText(text: 'Thông tin tài khoản', fontSize: 17, color: AppColor.forText),
             ),
+
             MyInput(
                 isMultiLine: false,
                 isNumber: true,
@@ -185,6 +157,32 @@ class _InformationIdentificationState extends State<InformationIdentification> {
       ),
     );
   }
+  register() async {
+    Utils(context).startLoading();
+    Register response = await authentication(
+        phoneController.text,
+        nameController.text,
+        dateOfBirthController.text,
+        idDate.text,
+        genderController.text,
+        idCardController.text,
+        idIssuedBy.text,
+        addressController.text);
+
+    Utils(context).stopLoading();
+    if (response.data != null){
+      Utils(context).showSuccessSnackBar('Đăng ký thành công');
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+            const MyBottomBar(selectedInit: 0)),
+      );
+    }else{
+      Utils(context).showErrorSnackBar('Đăng ký thất bại');
+    }
+
+  }
 }
 
 showSnack(context, warningCode) {
@@ -200,3 +198,5 @@ getPhoneNumber(phoneController) async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('phoneRegister')!;
 }
+
+

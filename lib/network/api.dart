@@ -5,7 +5,6 @@ import 'package:parkz/model/ekyc_response.dart';
 import 'package:parkz/model/login_response.dart';
 import 'package:parkz/model/register.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 const String host = 'http://parkzwebapiver2-001-site1.ctempurl.com';

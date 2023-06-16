@@ -34,7 +34,7 @@ class Utils {
   void showErrorSnackBar(message){
     Flushbar(
       duration: const Duration(seconds: 3),
-      titleText: const SemiBoldText(text: 'Thất bại', fontSize: 15, color: Colors.white),
+      titleText: const SemiBoldText(text: 'Thất bại', fontSize: 15, color: Colors.white, maxLine: 5),
       messageText:  MediumText(text: message, fontSize: 13, color: Colors.white),
       backgroundColor: Colors.red,
       flushbarPosition: FlushbarPosition.TOP,
