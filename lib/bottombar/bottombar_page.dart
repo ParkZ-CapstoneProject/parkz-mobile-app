@@ -48,8 +48,8 @@ class _MyBottomBarState extends State<MyBottomBar> {
         ),
         child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-          selectedFontSize: 15,
-          unselectedFontSize: 15,
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
           showUnselectedLabels: true,
             elevation: 20.0,
             items:   const <BottomNavigationBarItem>[

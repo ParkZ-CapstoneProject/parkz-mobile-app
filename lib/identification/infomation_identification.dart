@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkz/authentication/authentication_page.dart';
 import 'package:parkz/bottombar/bottombar_page.dart';
 import 'package:parkz/model/ekyc_response.dart';
 import 'package:parkz/model/register.dart';
@@ -9,7 +10,6 @@ import 'package:parkz/utils/input/date_input.dart';
 import 'package:parkz/utils/input/input_widget.dart';
 import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class InformationIdentification extends StatefulWidget {
   final EkycResponse userInfo;
@@ -38,14 +38,33 @@ class _InformationIdentificationState extends State<InformationIdentification> {
     super.initState();
 
     // TODO: implement initState
-    getPhoneNumber(phoneController);
-    idCardController.text = widget.userInfo.recognizedData!.id!;
-    dateOfBirthController.text = widget.userInfo.recognizedData!.birthday!;
-    nameController.text = widget.userInfo.recognizedData!.name!;
-    genderController.text = widget.userInfo.recognizedData!.sex!;
-    addressController.text = widget.userInfo.recognizedData!.address!;
-    idDate.text = widget.userInfo.recognizedData!.issueDate!;
-    idIssuedBy.text = widget.userInfo.recognizedData!.issueBy!;
+    final recognizedData = widget.userInfo.recognizedData;
+    if(AuthenticationPage.phone.isNotEmpty){
+      phoneController.text = AuthenticationPage.phone;
+    }
+    if (recognizedData != null) {
+      if (recognizedData.id != null) {
+        idCardController.text = recognizedData.id!;
+      }
+      if (recognizedData.birthday != null) {
+        dateOfBirthController.text = recognizedData.birthday!;
+      }
+      if (recognizedData.name != null) {
+        nameController.text = recognizedData.name!;
+      }
+      if (recognizedData.sex != null) {
+        genderController.text = recognizedData.sex!;
+      }
+      if (recognizedData.address != null) {
+        addressController.text = recognizedData.address!;
+      }
+      if (recognizedData.issueDate != null) {
+        idDate.text = recognizedData.issueDate!;
+      }
+      if (recognizedData.issueBy != null) {
+        idIssuedBy.text = recognizedData.issueBy!;
+      }
+    }
 
     // Show snack bar
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -62,7 +81,7 @@ class _InformationIdentificationState extends State<InformationIdentification> {
 
         child: MyButton(
             text: 'Tiếp tục',
-            function: isChecked == false ? null : register(),
+            function: isChecked == false ? null :() => register(),
             textColor: Colors.white,
             backgroundColor: AppColor.navy),
       ),
@@ -157,31 +176,43 @@ class _InformationIdentificationState extends State<InformationIdentification> {
       ),
     );
   }
-  register() async {
-    Utils(context).startLoading();
-    Register response = await authentication(
-        phoneController.text,
-        nameController.text,
-        dateOfBirthController.text,
-        idDate.text,
-        genderController.text,
-        idCardController.text,
-        idIssuedBy.text,
-        addressController.text);
+   register() async {
+    if (idCardController.text.isEmpty ||
+        dateOfBirthController.text.isEmpty ||
+        nameController.text.isEmpty ||
+        genderController.text.isEmpty ||
+        addressController.text.isEmpty ||
+        idDate.text.isEmpty ||
+        idIssuedBy.text.isEmpty)
+    {
+      Utils(context).showErrorSnackBar('Bạn phải điền tất cả thông tin');
 
-    Utils(context).stopLoading();
-    if (response.data != null){
-      Utils(context).showSuccessSnackBar('Đăng ký thành công');
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-            const MyBottomBar(selectedInit: 0)),
-      );
-    }else{
-      Utils(context).showErrorSnackBar('Đăng ký thất bại');
     }
+    else{
+      Utils(context).startLoading();
+      Register response = await authentication(
+          phoneController.text,
+          nameController.text,
+          dateOfBirthController.text,
+          idDate.text,
+          genderController.text,
+          idCardController.text,
+          idIssuedBy.text,
+          addressController.text);
 
+      Utils(context).stopLoading();
+      if (response.data != null){
+        Utils(context).showSuccessSnackBar('Đăng ký thành công');
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              const MyBottomBar(selectedInit: 0)),
+        );
+      }else{
+        Utils(context).showErrorSnackBar('Đăng ký thất bại');
+      }
+    }
   }
 }
 
@@ -193,10 +224,4 @@ showSnack(context, warningCode) {
         .showWarningSnackBar('Thông tin mặt trước và mặt sau không khớp');
   }
 }
-
-getPhoneNumber(phoneController) async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('phoneRegister')!;
-}
-
 
