@@ -1,0 +1,185 @@
+// To parse this JSON data, do
+//
+//     final parkingDetailResponse = parkingDetailResponseFromJson(jsonString);
+
+import 'dart:convert';
+
+ParkingDetailResponse parkingDetailResponseFromJson(String str) => ParkingDetailResponse.fromJson(json.decode(str));
+
+String parkingDetailResponseToJson(ParkingDetailResponse data) => json.encode(data.toJson());
+
+class ParkingDetailResponse {
+  final Data? data;
+  final bool? success;
+  final String? message;
+  final int? statusCode;
+  final int? count;
+
+  ParkingDetailResponse({
+    this.data,
+    this.success,
+    this.message,
+    this.statusCode,
+    this.count,
+  });
+
+  factory ParkingDetailResponse.fromJson(Map<String, dynamic> json) => ParkingDetailResponse(
+    data: json["data"] == null ? null : Data.fromJson(json["data"]),
+    success: json["success"],
+    message: json["message"],
+    statusCode: json["statusCode"],
+    count: json["count"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "data": data?.toJson(),
+    "success": success,
+    "message": message,
+    "statusCode": statusCode,
+    "count": count,
+  };
+}
+
+class Data {
+  final Parking? parking;
+
+  Data({
+    this.parking,
+  });
+
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+    parking: json["parking"] == null ? null : Parking.fromJson(json["parking"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "parking": parking?.toJson(),
+  };
+}
+
+class Parking {
+  final int? parkingId;
+  final String? name;
+  final String? address;
+  final String? description;
+  final dynamic stars;
+  final dynamic totalStars;
+  final dynamic starsCount;
+  final List<ParkingHasPrice>? parkingHasPrices;
+
+  Parking({
+    this.parkingId,
+    this.name,
+    this.address,
+    this.description,
+    this.stars,
+    this.totalStars,
+    this.starsCount,
+    this.parkingHasPrices,
+  });
+
+  factory Parking.fromJson(Map<String, dynamic> json) => Parking(
+    parkingId: json["parkingId"],
+    name: json["name"],
+    address: json["address"],
+    description: json["description"],
+    stars: json["stars"],
+    totalStars: json["totalStars"],
+    starsCount: json["starsCount"],
+    parkingHasPrices: json["parkingHasPrices"] == null ? [] : List<ParkingHasPrice>.from(json["parkingHasPrices"]!.map((x) => ParkingHasPrice.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "parkingId": parkingId,
+    "name": name,
+    "address": address,
+    "description": description,
+    "stars": stars,
+    "totalStars": totalStars,
+    "starsCount": starsCount,
+    "parkingHasPrices": parkingHasPrices == null ? [] : List<dynamic>.from(parkingHasPrices!.map((x) => x.toJson())),
+  };
+}
+
+class ParkingHasPrice {
+  final ParkingPrice? parkingPrice;
+
+  ParkingHasPrice({
+    this.parkingPrice,
+  });
+
+  factory ParkingHasPrice.fromJson(Map<String, dynamic> json) => ParkingHasPrice(
+    parkingPrice: json["parkingPrice"] == null ? null : ParkingPrice.fromJson(json["parkingPrice"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "parkingPrice": parkingPrice?.toJson(),
+  };
+}
+
+class ParkingPrice {
+  final int? parkingPriceId;
+  final String? parkingPriceName;
+  final int? startingTime;
+  final List<TimeLine>? timeLines;
+
+  ParkingPrice({
+    this.parkingPriceId,
+    this.parkingPriceName,
+    this.startingTime,
+    this.timeLines,
+  });
+
+  factory ParkingPrice.fromJson(Map<String, dynamic> json) => ParkingPrice(
+    parkingPriceId: json["parkingPriceId"],
+    parkingPriceName: json["parkingPriceName"],
+    startingTime: json["startingTime"],
+    timeLines: json["timeLines"] == null ? [] : List<TimeLine>.from(json["timeLines"]!.map((x) => TimeLine.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "parkingPriceId": parkingPriceId,
+    "parkingPriceName": parkingPriceName,
+    "startingTime": startingTime,
+    "timeLines": timeLines == null ? [] : List<dynamic>.from(timeLines!.map((x) => x.toJson())),
+  };
+}
+
+class TimeLine {
+  final int? timeLineId;
+  final String? name;
+  final int? price;
+  final bool? isActive;
+  final String? startTime;
+  final String? endTime;
+  final int? extraFee;
+
+  TimeLine({
+    this.timeLineId,
+    this.name,
+    this.price,
+    this.isActive,
+    this.startTime,
+    this.endTime,
+    this.extraFee,
+  });
+
+  factory TimeLine.fromJson(Map<String, dynamic> json) => TimeLine(
+    timeLineId: json["timeLineId"],
+    name: json["name"],
+    price: json["price"],
+    isActive: json["isActive"],
+    startTime: json["startTime"],
+    endTime: json["endTime"],
+    extraFee: json["extraFee"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "timeLineId": timeLineId,
+    "name": name,
+    "price": price,
+    "isActive": isActive,
+    "startTime": startTime,
+    "endTime": endTime,
+    "extraFee": extraFee,
+  };
+}

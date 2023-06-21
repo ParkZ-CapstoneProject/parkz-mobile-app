@@ -1,15 +1,21 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:parkz/bottombar/bottombar_page.dart';
 import 'package:parkz/home/components/nearby_card.dart';
+import 'package:parkz/home/components/nearby_shim_list.dart';
 import 'package:parkz/home/components/parking_horizontal_card.dart';
+import 'package:parkz/home/components/parking_horizontal_shim_list.dart';
 import 'package:parkz/home/components/title_list.dart';
-import 'package:parkz/notification/notification_page.dart';
+import 'package:parkz/model/nearest_response.dart';
+import 'package:parkz/network/api.dart';
 import 'package:parkz/parkinglist/parking_list_page.dart';
 import 'package:parkz/utils/constanst.dart';
+import 'package:parkz/utils/preference_manager.dart';
 import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
+
+import '../model/rating_home_response.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -20,6 +26,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String? address;
+  @override
+  void initState() {
+    super.initState();
+    getAddress();
+  }
+  void getAddress() async {
+    String? storedAddress = await PreferenceManager.getAddress();
+    setState(() {
+      address = storedAddress;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -29,43 +47,41 @@ class _HomePageState extends State<HomePage> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             title: Padding(
-              padding: const EdgeInsets.only(top: 20.0, bottom: 20, right: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0, right: 8),
-                          child: SvgPicture.asset('assets/icon/location.svg', width: 26,height: 26,),
+              padding: const EdgeInsets.only( right: 5),
+              child: SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: InkWell(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 8),
+                        child: SvgPicture.asset('assets/icon/location.svg', width: 26,height: 26,),
+                      ),
+                      Flexible(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:  [
+                              const RegularText(text: 'Vị trí của bạn', fontSize: 12, color: AppColor.navyPale),
+                              //address
+                              SemiBoldText(maxLine: 1, text: address != null ? '$address' : 'Loading...',
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ]
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            RegularText(text: 'Vị trí của bạn', fontSize: 12, color: AppColor.navyPale),
-                            SemiBoldText(text: 'Đại học Tôn Đức Thắng', fontSize: 15, color: Colors.white),
-                          ],
-                        )
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  const MyBottomBar(selectedInit: 1)),
-                      );
-                    },
+                      )
+                    ],
                   ),
-
-                  IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>  const NotificationPage()),
-                        );
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>  const MyBottomBar(selectedInit: 1)),
+                    );
                   },
-                      icon: const Icon(CupertinoIcons.bell_solid, size: 26,))
-                ],
+                ),
               ),
             ),
             backgroundColor: AppColor.navy,
@@ -83,25 +99,55 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
+
                   const TitleList(title: 'Gần bạn', page: ParkingListPage()),
-                  SizedBox(
-                    height: 310,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.only(left: 12),
-                      itemBuilder: (context, index) {
-                        return  NearByCard(
-                          indexRoom: index,
-                          title: 'Phố đi bộ Nguyễn Huệ',
-                          imagePath: 'https://images.pexels.com/photos/15125376/pexels-photo-15125376.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                          rating: 5.0,
-                          price: '100',
-                          address: '123 Nguyễn Huệ, Quận 1',
+
+                  FutureBuilder<NearestParkingResponse>(
+                    future: getNearestParking(),
+                    builder: (context, snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return const NearByLoadingList();
+                    }
+                    if(snapshot.hasData){
+                      if(snapshot.data!.data!.isNotEmpty){
+                        return SizedBox(
+                          height: 340,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.only(left: 12),
+                            itemBuilder: (context, index) {
+                              return  NearByCard(
+                                id: index,
+                                title: snapshot.data!.data![index].getListParkingNearestYouQueryResponse!.name!,
+                                imagePath: snapshot.data!.data![index].getListParkingNearestYouQueryResponse!.avatar,
+                                rating: snapshot.data!.data![index].getListParkingNearestYouQueryResponse!.stars,
+                                carPrice: snapshot.data!.data![index].priceCar,
+                                motoPrice: snapshot.data!.data![index].priceMoto,
+                                address: snapshot.data!.data![index].getListParkingNearestYouQueryResponse!.address!,
+                                isPrepayment: snapshot.data!.data![index].getListParkingNearestYouQueryResponse!.isPrepayment!,
+                                isOvernight: snapshot.data!.data![index].getListParkingNearestYouQueryResponse!.isOvernight!,
+                                distance: snapshot.data!.data![index].distance!,
+                              );
+                            },
+                            itemCount: snapshot.data?.data?.length,
+                          ),
                         );
-                      },
-                      itemCount: 5,
-                    ),
-                  ),
+                      }else {
+                        return const SizedBox(
+                          width: double.infinity,
+                          height: 310,
+                          child: Center(child: SemiBoldText(text: 'Không có bãi xe gần bạn', fontSize: 19, color: AppColor.forText),),
+                        );
+                      }
+                    }
+                    if(snapshot.hasError){
+                      print('lỗi ${snapshot.error}');
+                      throw Exception(snapshot.error);
+                    }
+                    return const Text(" Lỗi không xác dinh");
+
+                  },),
+
                 ],
               ),
             ),
@@ -117,22 +163,49 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   const SizedBox(height: 16),
                   const TitleList(title: 'Danh sách nổi bật', page: ParkingListPage()),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return ParkingCardHome(
-                        title: 'Takashimaya - 94 Nam Kỳ Khởi Nghĩa ',
-                        imagePath: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1167&q=80',
-                        rating: 5,
-                        price: '20.000',
-                        address: '50/1 Thành Thái, Phường 12, Quận 10, Thành phố Hồ Chí Minh, Thành Phố',
-                        isFavorite: true,
-                        indexRoom: index,
-                      );
-                    },
-                    itemCount: 16,
-                  ),
+
+                  FutureBuilder<RatingHomeResponse>(
+                    future: getParkingListHome(),
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return const ParkinkCardHomeLoadingList();
+                      }
+                      if(snapshot.hasData){
+                        if(snapshot.data!.data!.isNotEmpty){
+                          return  ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return ParkingCardHome(
+                                title: snapshot.data!.data![index].parkingShowInCusDto!.name!,
+                                imagePath: snapshot.data!.data![index].parkingShowInCusDto!.avatar!,
+                                rating: snapshot.data!.data![index].parkingShowInCusDto!.stars,
+                                motoPrice: snapshot.data!.data![index].priceMoto,
+                                carPrice: snapshot.data!.data![index].priceCar,
+                                address: snapshot.data!.data![index].parkingShowInCusDto!.address!,
+                                isFavorite: true,
+                                indexRoom: index,
+                              );
+                            },
+                            itemCount: snapshot.data!.data!.length,
+                          );
+                        }else {
+                          return const SizedBox(
+                            width: double.infinity,
+                            height: 310,
+                            child: Center(child: SemiBoldText(text: 'Không có bãi xe gần bạn', fontSize: 19, color: AppColor.forText),),
+                          );
+                        }
+                      }
+                      if(snapshot.hasError){
+                        print('lỗi ${snapshot.error}');
+                        throw Exception(snapshot.error);
+                      }
+                      return const Text(" Lỗi không xác dinh");
+                    },),
+
+
+
                   const SizedBox(height: 16),
                   Align(
                     alignment: Alignment.bottomCenter,

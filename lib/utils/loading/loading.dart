@@ -1,5 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:parkz/utils/text/medium.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 
@@ -14,12 +15,12 @@ class Utils {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const SimpleDialog(
+        return  SimpleDialog(
           elevation: 0.0,
-          backgroundColor: Colors.transparent, // can change this to your prefered color
+          backgroundColor: Colors.transparent,
           children: <Widget>[
             Center(
-              child: CircularProgressIndicator(),
+              child: Lottie.asset('assets/json/loading/96949-loading-animation.json', height: 180, width: 180),
             )
           ],
         );

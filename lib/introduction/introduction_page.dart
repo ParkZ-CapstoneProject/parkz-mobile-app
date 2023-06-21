@@ -64,7 +64,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 onLastPage == false
                     ? InkWell(
                         onTap: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) =>  const MyBottomBar(selectedInit: 0)),
                           );

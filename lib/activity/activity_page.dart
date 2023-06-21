@@ -3,8 +3,10 @@ import 'package:lottie/lottie.dart';
 import 'package:parkz/activity/component/activity_card.dart';
 import 'package:parkz/utils/button/button_widget.dart';
 import 'package:parkz/utils/constanst.dart';
+import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
+
 
 class ActivityPage extends StatefulWidget {
   const ActivityPage({Key? key}) : super(key: key);
@@ -15,7 +17,6 @@ class ActivityPage extends StatefulWidget {
 
 class _ActivityPageState extends State<ActivityPage> with SingleTickerProviderStateMixin{
   late TabController _tabController;
-
   @override
   void initState() {
     super.initState();
@@ -64,7 +65,9 @@ class _ActivityPageState extends State<ActivityPage> with SingleTickerProviderSt
                     const SizedBox(height: 5,),
                     const RegularText(text: 'Tìm bãi xe nhanh chóng và tiện lợi', fontSize: 13, color: AppColor.fadeText),
                     const SizedBox(height: 50,),
-                    MyButton(text: 'Đặt ngay', function: (){}, textColor: Colors.white, backgroundColor: AppColor.navy, minWidth: 250, ),
+                    MyButton(text: 'Đặt ngay', function: () {
+
+                    }, textColor: Colors.white, backgroundColor: AppColor.navy, minWidth: 250, ),
                   ],
                 ),
                 // Content for Tab 1
@@ -96,3 +99,4 @@ class _ActivityPageState extends State<ActivityPage> with SingleTickerProviderSt
     );
   }
 }
+

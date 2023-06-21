@@ -1,11 +1,14 @@
 import 'dart:convert';
-
 import 'package:intl/intl.dart';
 import 'package:parkz/model/ekyc_response.dart';
 import 'package:parkz/model/login_response.dart';
+import 'package:parkz/model/nearest_response.dart';
+import 'package:parkz/model/parking_detail_response.dart';
+import 'package:parkz/model/rating_home_response.dart';
 import 'package:parkz/model/register.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:parkz/utils/preference_manager.dart';
 
 const String host = 'http://parkzwebapiver2-001-site1.ctempurl.com';
 
@@ -87,4 +90,36 @@ Future<LoginResponse> login(phone) async {
 
 }
 
+// Lấy bãi xe gần bạn
+Future<NearestParkingResponse> getNearestParking() async {
+  double? lat = await PreferenceManager.getLatitude();
+  double? long = await PreferenceManager.getLongitude();
+  final response = await http.get(
+    Uri.parse('$host/api/parking-nearest?currentLatitude=$lat&currentLongtitude=$long'),
+    headers : { 'accept': 'application/json'},
+  );
+
+  final responseJson = jsonDecode(response.body);
+  return NearestParkingResponse.fromJson(responseJson);
+}
+
+//lấy danh sách bãi xe nổi bật
+Future<RatingHomeResponse> getParkingListHome() async {
+  final response = await http.get(
+    Uri.parse('$host/api/parkings-for-cus/ratings?PageNo=1&PageSize=10'),
+    headers : { 'accept': 'application/json'},
+  );
+  final responseJson = jsonDecode(response.body);
+  return RatingHomeResponse.fromJson(responseJson);
+}
+
+// Lấy chi tiết bãi xe
+Future<ParkingDetailResponse> getParkingDetail(id) async {
+  final response = await http.get(
+    Uri.parse('$host/api/parkings/mobile/parking-details?ParkingId=$id'),
+    headers : { 'accept': 'application/json'},
+  );
+  final responseJson = jsonDecode(response.body);
+  return ParkingDetailResponse.fromJson(responseJson);
+}
 

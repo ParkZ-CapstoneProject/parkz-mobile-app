@@ -106,35 +106,19 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      RegularText(
-                          text: 'Giá tạm tính',
-                          fontSize: 12,
-                          color: AppColor.navy),
-                      SemiBoldText(
-                          text: '50.000 VND',
-                          fontSize: 24,
-                          color: AppColor.forText),
-                    ],
-                  ),
-                  MyButton(
-                      text: 'Đặt chỗ',
-                      function: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BookingSlotPage()),
-                        );
-                      },
-                      textColor: Colors.white,
-                      backgroundColor: AppColor.navy)
-                ],
+              SizedBox(
+                width: double.infinity,
+                child: MyButton(
+                    text: 'Đặt chỗ',
+                    function: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BookingSlotPage()),
+                      );
+                    },
+                    textColor: Colors.white,
+                    backgroundColor: AppColor.navy),
               ),
             ],
           ),

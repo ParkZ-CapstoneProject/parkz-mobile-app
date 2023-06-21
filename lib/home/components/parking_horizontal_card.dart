@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:parkz/parkingdetail/parking_detail_page.dart';
 import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/text/regular.dart';
@@ -9,11 +11,12 @@ class ParkingCardHome extends StatefulWidget {
   final int indexRoom;
   final String title;
   final String imagePath;
-  final double rating;
-  final String price;
+  final double? rating;
+  final double? carPrice;
+  final double? motoPrice;
   final String address;
   final bool isFavorite;
-  const ParkingCardHome({Key? key, required this.title, required this.imagePath, required this.rating, required this.price, required this.address, required this.isFavorite, required this.indexRoom}) : super(key: key);
+  const ParkingCardHome({Key? key, required this.title, required this.imagePath, required this.rating, required this.address, required this.isFavorite, required this.indexRoom, this.carPrice, this.motoPrice}) : super(key: key);
 
   @override
   State<ParkingCardHome> createState() => _ParkingCardHomeState();
@@ -36,7 +39,7 @@ class _ParkingCardHomeState extends State<ParkingCardHome> {
 
   @override
   Widget build(BuildContext context) {
-    double cardHeight = 110;
+    double cardHeight = 146;
     double cardBorder = 12;
 
     return GestureDetector(
@@ -60,86 +63,116 @@ class _ParkingCardHomeState extends State<ParkingCardHome> {
                 ),
               ],
               color: Colors.white, borderRadius: BorderRadius.circular(cardBorder)),
-          child: Stack(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: ClipRRect(
-                      borderRadius:  BorderRadius.only(topLeft: Radius.circular(cardBorder), bottomLeft:Radius.circular(cardBorder) ),
-                      child: Image.network(
-                        widget.imagePath,
-                        fit: BoxFit.cover,
-                        height: cardHeight,
-                        width: double.infinity,
-                      ),
-                    ),
+              Flexible(
+                flex: 1,
+                child: ClipRRect(
+                  borderRadius:  BorderRadius.only(topLeft: Radius.circular(cardBorder), bottomLeft:Radius.circular(cardBorder) ),
+                  child: Image.network(
+                    widget.imagePath,
+                    fit: BoxFit.cover,
+                    height: cardHeight,
+                    width: double.infinity,
                   ),
-                  Flexible(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 16.0, top: 8, bottom: 8, right: 18),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Flexible(
-                            flex: 2,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+              ),
+              Flexible(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 18),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 18.0),
-                                  child: SemiBoldText(text: widget.title, fontSize: 17, color: Colors.black, maxLine: 1, align: TextAlign.left),
+                                Row(
+                                  children: [
+                                    RegularText(text: widget.rating.toString(), fontSize: 12 , color: AppColor.forText),
+                                    const Icon(Icons.star_rounded, color: AppColor.orange, size: 16,),
+                                  ],
                                 ),
-                                const SizedBox(height: 8,),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 16.0),
-                                  child: RegularText(text:  widget.address, fontSize: 13, color: Colors.black, maxLine: 2,
-                                  ),
+                                IconButton(
+
+                                  constraints: const BoxConstraints(),
+                                  icon: _isFavorited
+                                      ? const Icon(CupertinoIcons.suit_heart, size: 16,)
+                                      : const Icon(CupertinoIcons.suit_heart_fill, size: 16, color: Colors.red),
+                                  onPressed: () {
+                                    _toggleFavorite();
+                                  },
                                 ),
                               ],
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  RegularText(text: widget.rating.toString(), fontSize: 13 , color: AppColor.forText),
-                                  const Icon(Icons.star_rounded, color: AppColor.orange, size: 20,),
-                                ],
+                            SemiBoldText(text: widget.title, fontSize: 17, color: Colors.black, maxLine: 1, align: TextAlign.left),
+                            const SizedBox(height: 8,),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: RegularText(text:  widget.address, fontSize: 13, color: Colors.black, maxLine: 2,
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  const RegularText(text: 'Chỉ từ ', fontSize: 13, color: AppColor.forText),
-                                  SemiBoldText(text: '${widget.price}đ', fontSize: 17, color: AppColor.forText),
-                                ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          widget.carPrice != null
+                              ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset('assets/icon/car.svg',
+                                  width: 20, height: 16),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SemiBoldText(
+                                    text:
+                                    '${NumberFormat('#,###').format(widget.carPrice?.toInt()).replaceAll(',', '.')}đ',
+                                    fontSize: 12,
+                                    color: AppColor.forText),
                               ),
                             ],
                           )
+                              : const SizedBox(),
+                          widget.motoPrice != null
+                              ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment:
+                            CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset('assets/icon/bike.svg',
+                                  width: 20, height: 16),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SemiBoldText(
+                                    text:
+                                    '${NumberFormat('#,###').format(widget.carPrice?.toInt()).replaceAll(',', '.')}đ',
+                                    fontSize: 12,
+                                    color: AppColor.forText),
+                              ),
+                            ],
+                          )
+                              : const SizedBox()
                         ],
                       ),
-                    ),
 
-                  )
-                ],
-              ),
-              Positioned(
-                top: -8,
-                right: -2,
-                child: IconButton(
-                  icon: _isFavorited
-                      ? const Icon(CupertinoIcons.suit_heart, size: 20,)
-                      : const Icon(CupertinoIcons.suit_heart_fill, size: 20, color: Colors.red),
-                  onPressed: () {
-                    _toggleFavorite();
-                  },
+                    ],
+                  ),
                 ),
-              ),
+
+
+              )
             ],
           ),
         ),

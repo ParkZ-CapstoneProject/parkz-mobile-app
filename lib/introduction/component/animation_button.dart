@@ -45,7 +45,7 @@ class _AnimationButtonState extends State<AnimationButton> {
             duration: const Duration(milliseconds: 500),
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) =>  const MyBottomBar(selectedInit: 0)),
                 );
