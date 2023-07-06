@@ -61,10 +61,16 @@ class Parking {
   final String? name;
   final String? address;
   final String? description;
-  final dynamic stars;
-  final dynamic totalStars;
-  final dynamic starsCount;
+  final double? stars;
+  final double? totalStars;
+  final double? starsCount;
+  final int? motoSpot;
+  final int? carSpot;
+  final bool? isFull;
+  final bool? isPrepayment;
+  final bool? isOvernight;
   final List<ParkingHasPrice>? parkingHasPrices;
+  final List<ParkingSpotImage>? parkingSpotImages;
 
   Parking({
     this.parkingId,
@@ -74,7 +80,13 @@ class Parking {
     this.stars,
     this.totalStars,
     this.starsCount,
+    this.motoSpot,
+    this.carSpot,
+    this.isFull,
+    this.isPrepayment,
+    this.isOvernight,
     this.parkingHasPrices,
+    this.parkingSpotImages,
   });
 
   factory Parking.fromJson(Map<String, dynamic> json) => Parking(
@@ -82,10 +94,16 @@ class Parking {
     name: json["name"],
     address: json["address"],
     description: json["description"],
-    stars: json["stars"],
+    stars: json["stars"]?.toDouble(),
     totalStars: json["totalStars"],
     starsCount: json["starsCount"],
+    motoSpot: json["motoSpot"],
+    carSpot: json["carSpot"],
+    isFull: json["isFull"],
+    isPrepayment: json["isPrepayment"],
+    isOvernight: json["isOvernight"],
     parkingHasPrices: json["parkingHasPrices"] == null ? [] : List<ParkingHasPrice>.from(json["parkingHasPrices"]!.map((x) => ParkingHasPrice.fromJson(x))),
+    parkingSpotImages: json["parkingSpotImages"] == null ? [] : List<ParkingSpotImage>.from(json["parkingSpotImages"]!.map((x) => ParkingSpotImage.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -96,7 +114,13 @@ class Parking {
     "stars": stars,
     "totalStars": totalStars,
     "starsCount": starsCount,
+    "motoSpot": motoSpot,
+    "carSpot": carSpot,
+    "isFull": isFull,
+    "isPrepayment": isPrepayment,
+    "isOvernight": isOvernight,
     "parkingHasPrices": parkingHasPrices == null ? [] : List<dynamic>.from(parkingHasPrices!.map((x) => x.toJson())),
+    "parkingSpotImages": parkingSpotImages == null ? [] : List<dynamic>.from(parkingSpotImages!.map((x) => x.toJson())),
   };
 }
 
@@ -120,12 +144,14 @@ class ParkingPrice {
   final int? parkingPriceId;
   final String? parkingPriceName;
   final int? startingTime;
+  final Traffic? traffic;
   final List<TimeLine>? timeLines;
 
   ParkingPrice({
     this.parkingPriceId,
     this.parkingPriceName,
     this.startingTime,
+    this.traffic,
     this.timeLines,
   });
 
@@ -133,6 +159,7 @@ class ParkingPrice {
     parkingPriceId: json["parkingPriceId"],
     parkingPriceName: json["parkingPriceName"],
     startingTime: json["startingTime"],
+    traffic: json["traffic"] == null ? null : Traffic.fromJson(json["traffic"]),
     timeLines: json["timeLines"] == null ? [] : List<TimeLine>.from(json["timeLines"]!.map((x) => TimeLine.fromJson(x))),
   );
 
@@ -140,6 +167,7 @@ class ParkingPrice {
     "parkingPriceId": parkingPriceId,
     "parkingPriceName": parkingPriceName,
     "startingTime": startingTime,
+    "traffic": traffic?.toJson(),
     "timeLines": timeLines == null ? [] : List<dynamic>.from(timeLines!.map((x) => x.toJson())),
   };
 }
@@ -147,11 +175,11 @@ class ParkingPrice {
 class TimeLine {
   final int? timeLineId;
   final String? name;
-  final int? price;
+  final double? price;
   final bool? isActive;
   final String? startTime;
   final String? endTime;
-  final int? extraFee;
+  final double? extraFee;
 
   TimeLine({
     this.timeLineId,
@@ -181,5 +209,45 @@ class TimeLine {
     "startTime": startTime,
     "endTime": endTime,
     "extraFee": extraFee,
+  };
+}
+
+class Traffic {
+  final int? trafficId;
+  final String? name;
+
+  Traffic({
+    this.trafficId,
+    this.name,
+  });
+
+  factory Traffic.fromJson(Map<String, dynamic> json) => Traffic(
+    trafficId: json["trafficId"],
+    name: json["name"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "trafficId": trafficId,
+    "name": name,
+  };
+}
+
+class ParkingSpotImage {
+  final int? parkingSpotImageId;
+  final String? imgPath;
+
+  ParkingSpotImage({
+    this.parkingSpotImageId,
+    this.imgPath,
+  });
+
+  factory ParkingSpotImage.fromJson(Map<String, dynamic> json) => ParkingSpotImage(
+    parkingSpotImageId: json["parkingSpotImageId"],
+    imgPath: json["imgPath"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "parkingSpotImageId": parkingSpotImageId,
+    "imgPath": imgPath,
   };
 }

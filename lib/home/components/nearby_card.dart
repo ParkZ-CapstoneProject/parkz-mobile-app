@@ -59,7 +59,7 @@ class _NearByCardState extends State<NearByCard> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const ParkingDetailPage()),
+            MaterialPageRoute(builder: (context) =>  ParkingDetailPage(id: widget.id,)),
           );
         },
         child: Container(

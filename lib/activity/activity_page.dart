@@ -3,7 +3,6 @@ import 'package:lottie/lottie.dart';
 import 'package:parkz/activity/component/activity_card.dart';
 import 'package:parkz/utils/button/button_widget.dart';
 import 'package:parkz/utils/constanst.dart';
-import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 

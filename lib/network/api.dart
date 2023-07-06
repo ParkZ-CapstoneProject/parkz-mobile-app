@@ -8,7 +8,7 @@ import 'package:parkz/model/rating_home_response.dart';
 import 'package:parkz/model/register.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:parkz/utils/preference_manager.dart';
+
 
 const String host = 'http://parkzwebapiver2-001-site1.ctempurl.com';
 
@@ -91,35 +91,79 @@ Future<LoginResponse> login(phone) async {
 }
 
 // Lấy bãi xe gần bạn
-Future<NearestParkingResponse> getNearestParking() async {
-  double? lat = await PreferenceManager.getLatitude();
-  double? long = await PreferenceManager.getLongitude();
-  final response = await http.get(
-    Uri.parse('$host/api/parking-nearest?currentLatitude=$lat&currentLongtitude=$long'),
-    headers : { 'accept': 'application/json'},
-  );
+Future<NearestParkingResponse> getNearestParking(double? lat, double? long) async {
+  try {
+    final response = await http.get(
+      Uri.parse(
+          '$host/api/parking-nearest?currentLatitude=$lat&currentLongtitude=$long')
+    );
 
-  final responseJson = jsonDecode(response.body);
-  return NearestParkingResponse.fromJson(responseJson);
+    if (response.statusCode == 200) {
+      final responseJson = jsonDecode(response.body);
+      return NearestParkingResponse.fromJson(responseJson);
+    } else {
+      throw Exception('Failed to fetch nearest parking list. Status code: ${response.statusCode}');
+    }
+
+  } catch(e){
+    throw Exception('Fail to get nearest parking list: $e');
+  }
 }
 
-//lấy danh sách bãi xe nổi bật
+// Lấy danh sách bãi xe nổi bật
 Future<RatingHomeResponse> getParkingListHome() async {
-  final response = await http.get(
-    Uri.parse('$host/api/parkings-for-cus/ratings?PageNo=1&PageSize=10'),
-    headers : { 'accept': 'application/json'},
-  );
-  final responseJson = jsonDecode(response.body);
-  return RatingHomeResponse.fromJson(responseJson);
+  try {
+    final response = await http.get(
+      Uri.parse('$host/api/parkings-for-cus/ratings?PageNo=1&PageSize=10'),
+      headers: {'accept': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final responseJson = jsonDecode(response.body);
+      return RatingHomeResponse.fromJson(responseJson);
+    } else {
+      throw Exception('Failed to fetch parking sort by rating list. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Failed to fetch parking sort by list. Error: $e');
+  }
 }
+
 
 // Lấy chi tiết bãi xe
 Future<ParkingDetailResponse> getParkingDetail(id) async {
-  final response = await http.get(
-    Uri.parse('$host/api/parkings/mobile/parking-details?ParkingId=$id'),
-    headers : { 'accept': 'application/json'},
-  );
-  final responseJson = jsonDecode(response.body);
-  return ParkingDetailResponse.fromJson(responseJson);
+  try{
+    final response = await http.get(
+      Uri.parse('$host/api/parkings/mobile/parking-details?ParkingId=$id'),
+      headers : { 'accept': 'application/json'},
+    );
+    if (response.statusCode == 200) {
+      final responseJson = jsonDecode(response.body);
+      return ParkingDetailResponse.fromJson(responseJson);
+    } else {
+      throw Exception('Failed to fetch parking list. Status code: ${response.statusCode}');
+    }
+
+  } catch (e){
+    throw Exception('Fail to get parking detail: $e');
+  }
+
+}
+
+//Lấy danh sách địa điểm đến khi search
+Future<List<String>> fetchSuggestions(String query) async {
+  final response = await http.get(Uri.parse(
+      'https://nominatim.openstreetmap.org/search?q=$query,Ho%20Chi%20Minh%20City&format=json&countrycodes=VN'));
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(response.body);
+    List<String> suggestions = data
+        .map((item) =>
+    "${item['display_name']}, ${item['address'] != null ? item['address']['state'] : ''}")
+        .toList();
+    return suggestions;
+  } else {
+    throw Exception('Failed to fetch suggestions');
+  }
 }
 

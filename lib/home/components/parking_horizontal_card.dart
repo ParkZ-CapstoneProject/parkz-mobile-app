@@ -8,7 +8,7 @@ import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 
 class ParkingCardHome extends StatefulWidget {
-  final int indexRoom;
+  final int id;
   final String title;
   final String imagePath;
   final double? rating;
@@ -16,7 +16,7 @@ class ParkingCardHome extends StatefulWidget {
   final double? motoPrice;
   final String address;
   final bool isFavorite;
-  const ParkingCardHome({Key? key, required this.title, required this.imagePath, required this.rating, required this.address, required this.isFavorite, required this.indexRoom, this.carPrice, this.motoPrice}) : super(key: key);
+  const ParkingCardHome({Key? key, required this.title, required this.imagePath, required this.rating, required this.address, required this.isFavorite, required this.id, this.carPrice, this.motoPrice}) : super(key: key);
 
   @override
   State<ParkingCardHome> createState() => _ParkingCardHomeState();
@@ -46,7 +46,7 @@ class _ParkingCardHomeState extends State<ParkingCardHome> {
       onTap: (){
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) =>  const ParkingDetailPage()),
+          MaterialPageRoute(builder: (context) =>   ParkingDetailPage(id: widget.id,)),
         );
       },
       child: Padding(

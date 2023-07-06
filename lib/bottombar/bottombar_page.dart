@@ -3,7 +3,7 @@ import 'package:parkz/account/account_page.dart';
 import 'package:parkz/activity/activity_page.dart';
 import 'package:parkz/bottombar/components/bottom_iccon.dart';
 import 'package:parkz/home/home_page.dart';
-import 'package:parkz/location/location_page.dart';
+import 'package:parkz/location/glocation_page.dart';
 import 'package:parkz/utils/constanst.dart';
 
 class MyBottomBar extends StatefulWidget {
@@ -19,7 +19,7 @@ class _MyBottomBarState extends State<MyBottomBar> {
   late  int _selectedIndex = widget.selectedInit;
   static const List<Widget> _pages = <Widget>[
     HomePage(),
-    LocationPage(),
+    GLocationPage(),
     ActivityPage(),
     AccountPage()
   ];

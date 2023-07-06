@@ -59,8 +59,6 @@ class _ActivityCardState extends State<ActivityCard> {
                                 indent: 6),
                             SemiBoldText(
                                 text: '14:00', color: AppColor.forText, fontSize: 15),
-
-
                           ],
                         ),
                       ),

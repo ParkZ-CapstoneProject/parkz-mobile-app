@@ -55,10 +55,10 @@ class _BookingDetailState extends State<BookingDetail> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
+                  children: [
                     SemiBoldText(
                         text: 'Tổng thanh toán',
                         fontSize: 20,
@@ -69,7 +69,7 @@ class _BookingDetailState extends State<BookingDetail> {
                         color: AppColor.forText),
                   ],
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: MyButton(
                       text: 'Xác nhận giao dịch',
