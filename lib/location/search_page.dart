@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:parkz/location/component/location_suggestion_widget.dart';
+import 'package:parkz/location/component/search_loading_widget.dart';
 import 'package:parkz/network/api.dart';
+import 'package:parkz/utils/constanst.dart';
 
-class AddressSearch extends SearchDelegate<String> {
+import '../model/location_response.dart';
+
+class AddressSearch extends SearchDelegate<LocationSuggestion> {
+  AddressSearch() : super(
+      searchFieldLabel: "Điểm đến của bạn là ...",
+      searchFieldStyle: const TextStyle(
+        color: AppColor.forText,
+        fontSize: 16,
+      )
+  );
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -26,35 +38,49 @@ class AddressSearch extends SearchDelegate<String> {
     );
   }
 
- 
+
   @override
   Widget buildSuggestions(BuildContext context) {
     return FutureBuilder(
       // We will put the api call here
       future: fetchSuggestions(query),
-      builder: (context, snapshot) => query == ''
-          ? Container(
-        padding: const EdgeInsets.all(16.0),
-        child: const Center(child: Text('Nhâp địa điểm bạn muốn đến')),
-      )
+      builder: (context, snapshot) => query == '' ? const SizedBox()
+
           : snapshot.hasData
+
           ? ListView.builder(
-        itemBuilder: (context, index) => ListTile(
-          // we will display the data returned from our future here
-          title:
-          Text(snapshot.data![index]),
-          onTap: () {
-            close(context, snapshot.data![index]);
-          },
-        ),
+        itemBuilder: (context, index) =>
+            LocationSuggestionWidget(
+              address: snapshot.data![index].displayName!,
+              function: () {close(context, snapshot.data![index]);},
+            ),
         itemCount: snapshot.data?.length,
       )
-          : const Text('Tìm kiếm điểm đến ...'),
+
+          : const SearchLoadingWidget(),
     );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    return const Text('Tìm kiếm điểm đến ...');
+    return FutureBuilder(
+      // We will put the api call here
+      future: fetchSuggestions(query),
+      builder: (context, snapshot) => query == '' ? const SizedBox()
+
+          : snapshot.hasData
+
+          ? ListView.builder(
+        itemBuilder: (context, index) =>
+            LocationSuggestionWidget(
+              address: snapshot.data![index].displayName!,
+              function: () {close(context, snapshot.data![index]);},
+            ),
+        itemCount: snapshot.data?.length,
+      )
+
+          : const SearchLoadingWidget(),
+    );
   }
 }
+
