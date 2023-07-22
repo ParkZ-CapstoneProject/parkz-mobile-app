@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:parkz/account/account_profile.dart';
 import 'package:parkz/account/no_permission_page.dart';
-import 'package:parkz/authentication/authentication_page.dart';
-import 'package:parkz/utils/button/button_widget.dart';
-import 'package:parkz/utils/constanst.dart';
-import 'package:parkz/utils/text/medium.dart';
-import 'package:parkz/utils/text/semi_bold.dart';
+
 
 import '../network/api.dart';
 
@@ -35,6 +30,7 @@ class _AccountPageState extends State<AccountPage> {
   }
   @override
   Widget build(BuildContext context) {
+    print('User Token: + $_token');
     if(_token != null){
       return const AccountProfile();
     }

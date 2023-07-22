@@ -124,6 +124,7 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                 child: MyButton(
                     text: 'Đặt chỗ',
                     function: () async {
+
                       List<Floor> response = await getFloorsByParking(ParkingDetailPage.parkingIdGlobal, context);
                       DateTime startDateTime = DateTime(
                         _selectedDay!.year,

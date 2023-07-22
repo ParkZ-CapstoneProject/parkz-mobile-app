@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:parkz/account/no_permission_page.dart';
 import 'package:parkz/activity/component/activity_card.dart';
-import 'package:parkz/utils/button/button_widget.dart';
+import 'package:parkz/activity/component/empty_booking.dart';
 import 'package:parkz/utils/constanst.dart';
-import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 
+import '../model/upcoming_response.dart';
 import '../network/api.dart';
-
+import 'component/activity_loading.dart';
 
 class ActivityPage extends StatefulWidget {
   const ActivityPage({Key? key}) : super(key: key);
@@ -17,7 +16,8 @@ class ActivityPage extends StatefulWidget {
   State<ActivityPage> createState() => _ActivityPageState();
 }
 
-class _ActivityPageState extends State<ActivityPage> with SingleTickerProviderStateMixin{
+class _ActivityPageState extends State<ActivityPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String? _token;
   void getToken() async {
@@ -40,73 +40,138 @@ class _ActivityPageState extends State<ActivityPage> with SingleTickerProviderSt
     super.dispose();
   }
 
+  Future<void> _refreshData() async {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    if(_token == null ){
+    if (_token == null) {
       return const NoPermissionPage();
     }
-    return  Builder(
-      builder: (context) {
-        return Scaffold(
-          backgroundColor: AppColor.navyPale,
-          appBar: AppBar(
-            bottomOpacity: 0.0,
-            elevation: 0.0,
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
-            title: const SemiBoldText(text: 'Hoạt động', fontSize: 20, color: AppColor.forText),
-          ),
-          body: Column(
-            children: [
-              TabBar(
-                controller: _tabController,
-                indicatorColor: AppColor.orange,
-                labelColor: AppColor.forText,
-                tabs: const [
-                  Tab(text: "Upcoming"),
-                  Tab(text: "Lịch sử"),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    // Content for Tab 1
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children:  [
-                        Lottie.asset('assets/json/empty/629-empty-box.json', ),
-                        const SizedBox(height: 30,),
-                        const SemiBoldText(text: 'Có vẻ bạn chưa đặt đơn nào.', fontSize: 17, color: AppColor.forText),
-                        const SizedBox(height: 5,),
-                        const RegularText(text: 'Tìm bãi xe nhanh chóng và tiện lợi', fontSize: 13, color: AppColor.fadeText),
-                        const SizedBox(height: 50,),
-                        MyButton(text: 'Đặt ngay', function: () {
-
-                        }, textColor: Colors.white, backgroundColor: AppColor.navy, minWidth: 250, ),
-                      ],
-                    ),
-
-                    // Content for Tab 2
-                    ListView.builder(
-                      padding: const EdgeInsets.only(top: 10,bottom: 20, left: 15, right: 15),
-                      itemBuilder: (context, index) {
-                        return const Padding(
-                          padding: EdgeInsets.only(top: 16.0),
-                          child: ActivityCard(),
-                        );
-                      },
-                      itemCount: 5,
-                    ),
-                  ],
-                ),
-              ),
+    return Scaffold(
+      backgroundColor: AppColor.navyPale,
+      appBar: AppBar(
+        bottomOpacity: 0.0,
+        elevation: 0.0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        title: const SemiBoldText(
+            text: 'Hoạt động', fontSize: 20, color: AppColor.forText),
+      ),
+      body: Column(
+        children: [
+          TabBar(
+            controller: _tabController,
+            indicatorColor: AppColor.orange,
+            labelColor: AppColor.forText,
+            tabs: const [
+              Tab(text: "Upcoming"),
+              Tab(text: "Lịch sử"),
             ],
           ),
-        );
-      }
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // Content for Tab 1
+
+                FutureBuilder<UpcomingResponse?>(
+                    future: getBookingUpcoming(context),
+                    builder: (context, snapshot) {
+                  if(snapshot.connectionState == ConnectionState.waiting){
+                    return const ActivityLoading();
+                  }
+                  if(snapshot.hasData && snapshot.connectionState == ConnectionState.done){
+                    if(snapshot.data!.data != null){
+                      return RefreshIndicator(
+                        onRefresh: _refreshData,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.only(top: 10, bottom: 20, left: 15, right: 15),
+                          itemBuilder: (context, index) {
+                            return  Padding(
+                              padding: const EdgeInsets.only(top: 16.0),
+                              child: ActivityCard(
+                                  bookingId:  snapshot.data!.data![index].bookingSearchResult!.bookingId!,
+                                  dateBook: snapshot.data!.data![index].bookingSearchResult!.dateBook!,
+                                  startTime: snapshot.data!.data![index].bookingSearchResult!.startTime!,
+                                  endTime: snapshot.data!.data![index].bookingSearchResult!.endTime!,
+                                  licensePlate: snapshot.data!.data![index].vehicleInforSearchResult!.licensePlate!,
+                                  address: snapshot.data!.data![index].parkingSearchResult!.address!,
+                                  parkingName: snapshot.data!.data![index].parkingSearchResult!.name!,
+                                  floorName: snapshot.data!.data![index].parkingSlotSearchResult!.floorName!,
+                                  slotName: snapshot.data!.data![index].parkingSlotSearchResult!.name!,
+                                  status: snapshot.data!.data![index].bookingSearchResult!.status!
+                              ),
+                            );
+                          },
+                          itemCount: snapshot.data!.data!.length,
+                        ),
+                      );
+                    }
+                  }
+                  return const EmptyBooking();
+                }
+                ),
+
+                // Content for Tab 2
+
+                FutureBuilder<UpcomingResponse?>(
+                    future: getBookingHistory(context),
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return const ActivityLoading();
+                      }
+                      if(snapshot.hasData && snapshot.connectionState == ConnectionState.done){
+                        if(snapshot.data!.data != null){
+                          return RefreshIndicator(
+                            onRefresh: _refreshData,
+                            child: ListView.builder(
+                              padding: const EdgeInsets.only(top: 10, bottom: 20, left: 15, right: 15),
+                              itemBuilder: (context, index) {
+                                return  Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: ActivityCard(
+                                      bookingId:  snapshot.data!.data![index].bookingSearchResult!.bookingId!,
+                                      dateBook: snapshot.data!.data![index].bookingSearchResult!.dateBook!,
+                                      startTime: snapshot.data!.data![index].bookingSearchResult!.startTime!,
+                                      endTime: snapshot.data!.data![index].bookingSearchResult!.endTime!,
+                                      licensePlate: snapshot.data!.data![index].vehicleInforSearchResult!.licensePlate!,
+                                      address: snapshot.data!.data![index].parkingSearchResult!.address!,
+                                      parkingName: snapshot.data!.data![index].parkingSearchResult!.name!,
+                                      floorName: snapshot.data!.data![index].parkingSlotSearchResult!.floorName!,
+                                      slotName: snapshot.data!.data![index].parkingSlotSearchResult!.name!,
+                                      status: snapshot.data!.data![index].bookingSearchResult!.status!
+                                  ),
+                                );
+                              },
+                              itemCount: snapshot.data!.data!.length,
+                            ),
+                          );
+                        }
+                      }
+                      return const EmptyBooking();
+                    }
+                ),
+                // RefreshIndicator(
+                //   onRefresh: _refreshData,
+                //   child: ListView.builder(
+                //     padding: const EdgeInsets.only(
+                //         top: 10, bottom: 20, left: 15, right: 15),
+                //     itemBuilder: (context, index) {
+                //       return const Padding(
+                //         padding: EdgeInsets.only(top: 16.0),
+                //         child: ActivityCard(),
+                //       );
+                //     },
+                //     itemCount: 5,
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
-

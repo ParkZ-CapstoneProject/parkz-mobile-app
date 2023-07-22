@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkz/booking/booking_detail.dart';
+import 'package:parkz/booking/component/booking_slot_loading.dart';
 import 'package:parkz/booking/component/slot.dart';
 import 'package:parkz/model/slots_response.dart';
 import 'package:parkz/network/api.dart';
@@ -7,7 +8,6 @@ import 'package:parkz/utils/button/button_widget.dart';
 import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 
-import '../home/components/nearby_shim_list.dart';
 import '../model/floors_response.dart';
 import '../utils/loading/loading.dart';
 
@@ -54,6 +54,11 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
     super.dispose();
   }
 
+  Future<void> _refreshData() async {
+    setState(() {});
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -78,21 +83,36 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
                     height: 49,
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColor.navyPale),
 
-                    child: DropdownButton<Floor>(
-                      isExpanded: true,
-                      value: selectedFloor,
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedFloor = newValue!;
-                          _getSlots(selectedFloor.floorId);
-                        });
-                      },
-                      items: widget.floors.map((floor) {
-                        return DropdownMenuItem<Floor>(
-                          value: floor,
-                          child: Text(floor.floorName!),
-                        );
-                      }).toList(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: DropdownButton<Floor>(
+                            isExpanded: true,
+                            value: selectedFloor,
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedFloor = newValue!;
+                                _getSlots(selectedFloor.floorId);
+                              });
+                            },
+                            items: widget.floors.map((floor) {
+                              return DropdownMenuItem<Floor>(
+                                value: floor,
+                                child: Text(floor.floorName!),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        IconButton(
+                          padding: const EdgeInsets.only(bottom: 3),
+                          icon: const Icon(Icons.refresh,),
+                          onPressed: () {
+                            _refreshData();
+                          },
+                        ),
+                      ],
                     ),
 
                   ),
@@ -119,7 +139,7 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
           future: getSlotsParkingByFloor(selectedFloor.floorId, widget.startTime, widget.endTime),
           builder: (context, snapshot) {
             if(snapshot.connectionState == ConnectionState.waiting){
-              return const NearByLoadingList();
+              return const BookingSlotLoading();
             }
 
             if (snapshot.hasError) {
@@ -142,14 +162,14 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
                 int maxColumnIndex = 0;
                 int maxRowIndex = 0;
                 //Find max column and row
-                slots.forEach((slot) {
+                for (var slot in slots) {
                   if (slot.parkingSlotDto!.columnIndex! > maxColumnIndex) {
                     maxColumnIndex = slot.parkingSlotDto!.columnIndex!;
                   }
                   if (slot.parkingSlotDto!.rowIndex! > maxRowIndex) {
                     maxRowIndex = slot.parkingSlotDto!.rowIndex!;
                   }
-                });
+                }
 
                 return StatefulBuilder(builder: (context, setState) {
                   //Map ở đây nè
@@ -161,8 +181,8 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
 
                     for (int cellIndex = 0; cellIndex <= maxColumnIndex; cellIndex++) {
 
-                      ParkingSlot slot = slots.firstWhere((element) => element.parkingSlotDto?.columnIndex == cellIndex && element.parkingSlotDto?.rowIndex == rowIndex,);
-                      if (slot != null) {
+                      ParkingSlot? slot = slots.firstWhere((element) => element.parkingSlotDto?.columnIndex == cellIndex && element.parkingSlotDto?.rowIndex == rowIndex, orElse: () => ParkingSlot(),);
+                      if (slot.parkingSlotDto != null) {
                         myCells.add(
                           DataCell(
                             onTap: () {

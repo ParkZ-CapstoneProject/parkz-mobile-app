@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ProfilePic extends StatelessWidget {
-  final bool isEdited;
+  final String? ava;
   const ProfilePic({
-    Key? key, required this.isEdited,
+    Key? key, this.ava,
   }) : super(key: key);
 
   @override
@@ -11,34 +11,9 @@ class ProfilePic extends StatelessWidget {
     return SizedBox(
       height: 115,
       width: 115,
-      child: Stack(
-        fit: StackFit.expand,
-        clipBehavior: Clip.none,
-        children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2016/03/28/12/35/cat-1285634_1280.png'),
+      child: CircleAvatar (
+       backgroundImage: NetworkImage(ava == null ? 'https://cdn.pixabay.com/photo/2016/03/28/12/35/cat-1285634_1280.png' : ava!),
           ),
-          isEdited ?
-          Positioned(
-            right: -16,
-            bottom: 0,
-            child: SizedBox(
-              height: 46,
-              width: 46,
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  backgroundColor: const Color(0xFFF5F6F9),
-                ),
-                onPressed: () {},
-                child: const Icon(Icons.camera_alt),
-              ),
-            ),
-          ) : const SizedBox()
-        ],
-      ),
     );
   }
 }

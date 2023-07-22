@@ -8,16 +8,18 @@ import 'package:parkz/network/api.dart';
 import 'package:parkz/parkingdetail/component/bottom_parking_bar.dart';
 import 'package:parkz/utils/button/button_widget.dart';
 import 'package:parkz/utils/constanst.dart';
-import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/loading/loading_page.dart';
 import 'package:parkz/utils/text/medium.dart';
 import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 import 'package:parkz/vehicle/vehicle_page.dart';
 
+import '../model/createVehicleRespnse.dart';
 import '../model/ecpected_price_response.dart';
+import '../model/profile_response.dart';
 import '../model/vehicles_response.dart';
 import '../parkingdetail/parking_detail_page.dart';
+import '../utils/loading/loading.dart';
 import 'booking_slot_page.dart';
 
 class BookingDetail extends StatefulWidget {
@@ -31,6 +33,16 @@ class _BookingDetailState extends State<BookingDetail> {
   double containerPadding = 24;
   int selectedPaymentType = 0; // 0: Thanh toán trước, 1: Thanh toán trả sau
   Vehicle? result;
+  String? nameBook;
+  String? phoneBook;
+  String? guessNameBook;
+  String? guessPhoneBook;
+
+  TextEditingController guessNameController = TextEditingController();
+  TextEditingController guessPhoneController = TextEditingController();
+  TextEditingController licensePlateController = TextEditingController();
+  TextEditingController vehicleNameController = TextEditingController();
+  TextEditingController colorController = TextEditingController();
 
 
   String moneyFormat(double number) {
@@ -40,6 +52,19 @@ class _BookingDetailState extends State<BookingDetail> {
           (Match m) => '${m[1]} ',
     );
   }
+
+  Future<void> _getCustomerName(context) async {
+    ProfileResponse? profileResponse = await getProfile(context);
+    if(profileResponse != null ){
+      setState(() {
+        nameBook = profileResponse.data!.name;
+        phoneBook = profileResponse.data!.phone;
+
+      });
+    }
+
+  }
+
   Future<void> _chooseVehicle(BuildContext context) async {
     Vehicle? storeResult = await Navigator.push(
       context,
@@ -48,8 +73,112 @@ class _BookingDetailState extends State<BookingDetail> {
     setState(() {
       result = storeResult;
     });
-
   }
+
+  void _showFullScreenDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          // insetPadding: const EdgeInsets.all(16),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: guessNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Tên người đặt hộ',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.navy, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: guessPhoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Số điện thoại người đặt hộ',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.navy, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: licensePlateController,
+                  decoration: const InputDecoration(
+                    labelText: 'Biển số xe người đặt hộ',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.navy, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: vehicleNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Tên phương tiện người đặt hộ',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.navy, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: colorController,
+                  decoration: const InputDecoration(
+                    labelText: 'Màu xe người đặt hộ',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.navy, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                MyButton(text: 'Đặt hộ', function:  () async {
+                  guessNameBook = guessNameController.text;
+                  guessPhoneBook = guessPhoneController.text;
+
+                  String licensePlate = licensePlateController.text;
+                  String vehicleName = vehicleNameController.text;
+                  String color = colorController.text;
+                  CreateVehicleResponse? response =  await createVehicleGuest(licensePlate, vehicleName, color);
+                  if(response != null){
+                    setState(() {
+                      result = Vehicle(color: color, licensePlate: licensePlate, vehicleName: vehicleName, vehicleInforId: response.data);
+                      nameBook = guessNameBook;
+                      phoneBook = guessPhoneBook;
+                    });
+
+                    Navigator.of(context).pop();
+
+                  }else{
+                    Utils(context).showWarningSnackBar('Tạo xe thất bại');
+                  }
+                }, textColor: Colors.white, backgroundColor: AppColor.navy)
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    _getCustomerName(context);
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<ExpectedPriceResponse>(
@@ -122,6 +251,8 @@ class _BookingDetailState extends State<BookingDetail> {
                                     DateFormat('yyyy-MM-dd').format(BottomParkingBar.startDayGlobal).toString(),
                                     result!.vehicleInforId,
                                     selectedPaymentType,
+                                    guessNameBook,
+                                    guessPhoneBook,
                                     context
                                 );
                               if(bookingId != null){
@@ -129,7 +260,7 @@ class _BookingDetailState extends State<BookingDetail> {
                                       await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>  BookingPage(bookingId: bookingId!,)),
+                                      builder: (context) =>  BookingPage(bookingId: bookingId,)),
                                 );
                               }
                             }
@@ -159,7 +290,7 @@ class _BookingDetailState extends State<BookingDetail> {
                           text: 'Thông tin đặt chỗ',
                           fontSize: 20,
                           color: AppColor.forText),
-                      SizedBox(height: 19),
+                      const SizedBox(height: 19),
                       Row(
                         children: [
                           ClipRRect(
@@ -303,8 +434,9 @@ class _BookingDetailState extends State<BookingDetail> {
                               color: AppColor.forText),
                           InkWell(
                             onTap: () {
+                              _showFullScreenDialog(context);
                                   },
-                            child: SemiBoldText(
+                            child: const SemiBoldText(
                                 text: 'Đặt hộ',
                                 fontSize: 15,
                                 color: AppColor.orange),
@@ -314,11 +446,11 @@ class _BookingDetailState extends State<BookingDetail> {
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          MediumText(
+                        children:  [
+                          const MediumText(
                               text: 'Tên', fontSize: 14, color: AppColor.forText),
                           SemiBoldText(
-                              text: 'Trần Ngọc Thắng',
+                              text: nameBook.toString(),
                               fontSize: 15,
                               color: AppColor.forText)
                         ],
@@ -326,13 +458,13 @@ class _BookingDetailState extends State<BookingDetail> {
                       const SizedBox(height: 9),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          MediumText(
+                        children:  [
+                          const MediumText(
                               text: 'Số điện thoại',
                               fontSize: 14,
                               color: AppColor.forText),
                           SemiBoldText(
-                              text: '0773834602',
+                              text: phoneBook.toString(),
                               fontSize: 15,
                               color: AppColor.forText)
                         ],
@@ -452,7 +584,7 @@ class _BookingDetailState extends State<BookingDetail> {
           width: double.infinity,
           height: double.infinity,
           color: Colors.white,
-          child: Center(child: SemiBoldText(text: 'Đã có lỗi xảy ra', fontSize: 19, color: AppColor.forText),),
+          child: const Center(child: SemiBoldText(text: 'Đã có lỗi xảy ra', fontSize: 19, color: AppColor.forText),),
         );
       }
     );

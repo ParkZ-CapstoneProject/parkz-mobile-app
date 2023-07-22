@@ -11,15 +11,19 @@ import 'package:parkz/model/register.dart';
 import 'package:http/http.dart' as http;
 import 'package:parkz/utils/loading/loading.dart';
 
+import '../model/balanceResponse.dart';
 import '../model/booking_detail_response.dart';
 import '../model/booking_response.dart';
 import '../model/createVehicleRespnse.dart';
 import '../model/ecpected_price_response.dart';
 import '../model/location_response.dart';
+import '../model/profile_response.dart';
 import '../model/search_parking_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../model/slots_response.dart';
+import '../model/transaction_response.dart';
+import '../model/upcoming_response.dart';
 import '../model/vehicles_response.dart';
 import '../model/wallet_deposit_response.dart';
 
@@ -208,22 +212,28 @@ Future<ParkingDetailResponse> getParkingDetail(id) async {
 
 //Lấy danh sách địa điểm đến khi search
 Future<List<LocationSuggestion>> fetchSuggestions(String query) async {
-  final response = await http.get(Uri.parse(
-      'https://nominatim.openstreetmap.org/search?q=$query,Ho%20Chi%20Minh%20City&format=json&countrycodes=VN'));
-
-  if (response.statusCode == 200) {
-    final List<dynamic> responseJson = jsonDecode(response.body);
-    return responseJson
-        .map((json) => LocationSuggestion.fromJson(json))
-        .toList();
-  } else {
-    throw Exception(
-        'Failed to fetch Location list. Status code: ${response.statusCode}');
+  try{
+    if(query.trim() != '' ){
+      final response = await http.get(Uri.parse(
+          'https://nominatim.openstreetmap.org/search?q=${query.trim()},Ho%20Chi%20Minh%20City&format=json&countrycodes=VN'));
+      if (response.statusCode == 200) {
+        final List<dynamic> responseJson = jsonDecode(response.body);
+        return responseJson
+            .map((json) => LocationSuggestion.fromJson(json))
+            .toList();
+      } else {
+        throw Exception('Failed to fetch Location list. Status code: ${response.statusCode}');
+      }
+    }
+    throw Exception('Failed to fetch Location list');
+  }catch(e){
+    throw Exception ('Failed to fetch Location list. Status code: $e}');
   }
+
 }
 
 // Lấy bãi xe theo địa điểm search
-Future<SearchParkingResponse> getParkingNearbyDestination(lat, long, range) async {
+Future<SearchParkingResponse?> getParkingNearbyDestination(lat, long, range) async {
   try {
     final response = await http.get(
       Uri.parse('$host/api/parking-nearest/distance?currentLatitude=$lat&currentLongtitude=$long&distance=$range'),
@@ -232,10 +242,11 @@ Future<SearchParkingResponse> getParkingNearbyDestination(lat, long, range) asyn
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body);
       return SearchParkingResponse.fromJson(responseJson);
-    } else {
-      throw Exception(
-          'Failed to fetch parking list nearby destination. Status code: ${response.statusCode}');
     }
+    if(response.statusCode >= 400 && response.statusCode <500){
+      throw Exception('Fail to create booking: Status code ${response.statusCode} Message ${response.body}');
+    }
+    return null;
   } catch (e) {
     throw Exception('Fail to get parking list nearby destination : $e');
   }
@@ -244,27 +255,31 @@ Future<SearchParkingResponse> getParkingNearbyDestination(lat, long, range) asyn
 Future<List<Floor>> getFloorsByParking(id, context) async {
   try {
     String? token = await storage.read(key: 'token');
-    final response = await http.get(Uri.parse('$host/api/floors/parking/$id'),
-        headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'bearer $token',
-    });
+    if(token != null){
+      final response = await http.get(Uri.parse('$host/api/floors/parking/$id'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'bearer $token',
+          });
 
-    if (response.statusCode == 200) {
-      final responseJson = jsonDecode(response.body);
-      FloorsResponse floorsResponse = FloorsResponse.fromJson(responseJson);
-      return floorsResponse.data!;
+      if (response.statusCode == 200) {
+        final responseJson = jsonDecode(response.body);
+        FloorsResponse floorsResponse = FloorsResponse.fromJson(responseJson);
+        return floorsResponse.data!;
+      }
+      if (response.statusCode == 401){
+        Utils(context).showErrorSnackBar('Bạn phải đăng nhập để có thể đặt chỗ');
+        throw Exception(
+            'Failed to fetch parking list. Status code: ${response.statusCode}');
+      }
+      else {
+        throw Exception(
+            'Failed to fetch parking list. Status code: ${response.statusCode}');
+      }
     }
-    if (response.statusCode == 401){
-      Utils(context).showErrorSnackBar('Bạn phải đăng nhập để có thể đặt chỗ');
-      throw Exception(
-          'Failed to fetch parking list. Status code: ${response.statusCode}');
-    }
-    else {
-      throw Exception(
-          'Failed to fetch parking list. Status code: ${response.statusCode}');
-    }
+    Utils(context).showErrorSnackBar('Bạn phải đăng nhập để có thể đặt chỗ');
+    throw Exception('Chưa đăng nhập');
   } catch (e) {
     throw Exception('Fail to get parking detail: $e');
   }
@@ -359,7 +374,7 @@ Future <void> updateDeviceToken() async {
 }
 
 // Booking
-Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleInforId,int payment, context) async {
+Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleInforId,int payment, guessName, guessPhone, context) async {
   String paymentMethod = payment == 1 ? 'tra_sau' : 'thanh_toan_online';
 
   String? deviceToken = await storage.read(key: 'DeviceToken');
@@ -372,6 +387,8 @@ Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleI
   print('vehicleInforId: $vehicleInforId');
   print('userID: $userID');
   print('DeviceToken: $deviceToken');
+  print('guessName: $guessName');
+  print('guessPhone: $guessPhone');
   try {
     if (deviceToken != null && userID != null){
       Map<String, dynamic> requestBody = {
@@ -380,6 +397,8 @@ Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleI
           'startTime': startTime,
           'endTime': endTime,
           'dateBook': dateBook,
+          'guestName': guessName,
+          'guestPhone': guessPhone,
           'paymentMethod': paymentMethod,
           'vehicleInforId': vehicleInforId,
           'userId': int.parse(userID),
@@ -442,12 +461,47 @@ Future<CreateVehicleResponse?> createVehicle(licensePlate, vehicleName, color) a
         return CreateVehicleResponse.fromJson(responseJson);
       }
     }
+    print('Tạo mới thất bại');
+    return null;
+  } catch (e) {
+    throw Exception('Fail to create vehicle: $e');
+  }
+}
+
+// Tạo mới phương tiện cho guest
+Future<CreateVehicleResponse?> createVehicleGuest(licensePlate, vehicleName, color) async {
+  try {
+    String? token = await storage.read(key: 'token');
+
+    if(token != null){
+      Map<String, dynamic> requestBody = {
+        "licensePlate": licensePlate,
+        "vehicleName": vehicleName,
+        "color": color,
+        "trafficId": 1,
+      };
+      final response = await http.post(
+          Uri.parse('$host/api/vehicle-infor-guest'),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'bearer $token',
+          },
+          body: jsonEncode(requestBody)
+      );
+      if (response.statusCode == 201) {
+        print(' Thành công');
+        final responseJson = jsonDecode(response.body);
+        return CreateVehicleResponse.fromJson(responseJson);
+      }
+    }
     print('Bị khùm');
     return null;
   } catch (e) {
-    throw Exception('Fail to create Vehicl: $e');
+    throw Exception('Fail to create vehicle: $e');
   }
 }
+
 
 //Nạp tiền vào ví customer
 Future<String> depositWallet(int amount, context) async {
@@ -476,7 +530,6 @@ Future<String> depositWallet(int amount, context) async {
         final responseJson = jsonDecode(response.body);
         WalletDepositResponse depositResponse = WalletDepositResponse.fromJson(responseJson);
         if(depositResponse.data != null){
-          Utils(context).showSuccessSnackBar('Gọi qua thành đạt thành công');
           return depositResponse.data!;
         }else{
           // không tìm thấy user
@@ -516,5 +569,195 @@ Future<BookingDetailResponse> getBookingDetail(id) async {
     throw Exception('Fail to get parking detail: $e');
   }
 }
+
+// Lấy danh sách upcoming
+Future<UpcomingResponse?> getBookingUpcoming(context) async {
+  try {
+    String? userID = await storage.read(key: 'userID');
+    String? token = await storage.read(key: 'token');
+    if(userID != null && token != null){
+      final response = await http.get(
+        Uri.parse('$host/api/customer-booking/upcomming/$userID'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'bearer $token',
+        },
+      );
+      if (response.statusCode >= 200 && response.statusCode <300) {
+        final responseJson = jsonDecode(response.body);
+        return UpcomingResponse.fromJson(responseJson);
+      } else {
+          throw Exception('Fail to get upcoming booking.: Status code ${response.statusCode} Message ${response.body}');
+        }
+      }
+    return null;
+  } catch (e) {
+    throw Exception('Fail to get upcoming booking: $e');
+  }
+}
+
+//Lấy history
+Future<UpcomingResponse?> getBookingHistory(context) async {
+  try {
+    String? userID = await storage.read(key: 'userID');
+    String? token = await storage.read(key: 'token');
+    if(userID != null && token != null){
+      final response = await http.get(
+        Uri.parse('$host/api/customer-booking/activities/$userID'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'bearer $token',
+        },
+      );
+      if (response.statusCode >= 200 && response.statusCode <300) {
+        final responseJson = jsonDecode(response.body);
+        return UpcomingResponse.fromJson(responseJson);
+      } else {
+        throw Exception('Fail to get upcoming booking.: Status code ${response.statusCode} Message ${response.body}');
+      }
+    }
+    return null;
+  } catch (e) {
+    throw Exception('Fail to get upcoming booking: $e');
+  }
+}
+
+// Lấy số dư
+Future<BalanceResponse?> getBalance(context) async {
+  try {
+    String? userID = await storage.read(key: 'userID');
+    String? token = await storage.read(key: 'token');
+    if(userID != null && token != null){
+      final response = await http.get(
+        Uri.parse('$host/api/customer/wallet/$userID'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'bearer $token',
+        },
+      );
+      if (response.statusCode >= 200 && response.statusCode <300) {
+        final responseJson = jsonDecode(response.body);
+        return BalanceResponse.fromJson(responseJson);
+      } else {
+        if(response.statusCode >= 400 && response.statusCode <500){
+          final responseJson = jsonDecode(response.body);
+          BalanceResponse depositResponse = BalanceResponse.fromJson(responseJson);
+          Utils(context).showWarningSnackBar('${depositResponse.message}');
+        }else{
+          throw Exception('Fail to get balance wallet: Status code ${response.statusCode} Message ${response.body}');
+        }
+        throw Exception(
+            'Failed to fetch balance wallet. Status code: ${response.statusCode}');
+      }
+    }
+    return null;
+  } catch (e) {
+    throw Exception('Fail to balance wallet: $e');
+  }
+}
+
+//Lấy lịch sử giao dịch
+Future<TransactionResponse?> getTransactionHistory(context) async {
+  try {
+    String? userID = await storage.read(key: 'userID');
+    String? token = await storage.read(key: 'token');
+    if(userID != null && token != null){
+      final response = await http.get(
+        Uri.parse('$host/api/customer/transactions/$userID'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'bearer $token',
+        },
+      );
+      if (response.statusCode >= 200 && response.statusCode <300) {
+        final responseJson = jsonDecode(response.body);
+        return TransactionResponse.fromJson(responseJson);
+      } else {
+        if(response.statusCode >= 400 && response.statusCode <500){
+          final responseJson = jsonDecode(response.body);
+          TransactionResponse depositResponse = TransactionResponse.fromJson(responseJson);
+          Utils(context).showWarningSnackBar('${depositResponse.message}');
+        }else{
+          throw Exception('Fail to get balance wallet: Status code ${response.statusCode} Message ${response.body}');
+        }
+        throw Exception(
+            'Failed to fetch balance wallet. Status code: ${response.statusCode}');
+      }
+    }
+    return null;
+  } catch (e) {
+    throw Exception('Fail to balance wallet: $e');
+  }
+}
+
+//Hủy đơn
+Future<void> cancelBooking(int bookingId, context) async {
+  try {
+      Map<String, dynamic> requestBody = {
+        "bookingId": bookingId
+      };
+
+      final response = await http.post(
+          Uri.parse('$host/api/customer-booking/cancel-booking'),
+          headers: {
+            'accept': 'text/plain',
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(requestBody)
+      );
+      if (response.statusCode >= 200 && response.statusCode <300) {
+        final responseJson = jsonDecode(response.body);
+        //Giong nhau nen lay cai nay luon duoc
+        WalletDepositResponse depositResponse = WalletDepositResponse.fromJson(responseJson);
+        Utils(context).showSuccessSnackBar(depositResponse.data);
+      }else {
+        if(response.statusCode >= 400 && response.statusCode <500){
+          final responseJson = jsonDecode(response.body);
+          WalletDepositResponse depositResponse = WalletDepositResponse.fromJson(responseJson);
+          Utils(context).showWarningSnackBar('${depositResponse.message}');
+        }else{
+          throw Exception('Fail to cancel booking: Status code ${response.statusCode} Message ${response.body}');
+        }
+      }
+    throw Exception('Fail to cancel booking. ko xac dinh');
+  } catch (e) {
+    throw Exception('Fail to cancel booking: $e');
+  }
+}
+
+// Lấy profile
+Future<ProfileResponse?> getProfile(context) async {
+  try {
+    String? userID = await storage.read(key: 'userID');
+    String? token = await storage.read(key: 'token');
+    if(userID != null && token != null){
+      final response = await http.get(
+        Uri.parse('$host/api/mobile/account/$userID'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'bearer $token',
+        },
+      );
+      if (response.statusCode >= 200 && response.statusCode <300) {
+        final responseJson = jsonDecode(response.body);
+        return ProfileResponse.fromJson(responseJson);
+      } else {
+        if(response.statusCode >= 400 && response.statusCode <500){
+          final responseJson = jsonDecode(response.body);
+          ProfileResponse depositResponse = ProfileResponse.fromJson(responseJson);
+          Utils(context).showWarningSnackBar('${depositResponse.message}');
+        }else{
+          throw Exception('Fail to get profile info: Status code ${response.statusCode} Message ${response.body}');
+        }
+        throw Exception(
+            'Failed to fetch profile info. Status code: ${response.statusCode}');
+      }
+    }
+    return null;
+  } catch (e) {
+    throw Exception('Fail to profile info:: $e');
+  }
+}
+
 
 

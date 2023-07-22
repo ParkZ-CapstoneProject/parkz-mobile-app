@@ -255,9 +255,11 @@ class _GLocationPageState extends State<GLocationPage> {
                 ),
               ),
             ),
-            parkingNearby != null ?
-            Positioned(
+            parkingNearby != null ? parkingNearby!.data!.isNotEmpty ?
+            AnimatedPositioned(
                 bottom: 10.0,
+                duration: const Duration(seconds: 1),
+                curve: Curves.linear,
                 child: SizedBox(
                   height: 150.0,
                   width: MediaQuery.of(context).size.width,
@@ -267,27 +269,26 @@ class _GLocationPageState extends State<GLocationPage> {
                       itemBuilder: (BuildContext context, int index) {
                         return _nearbyPlacesList(index);
                       }),
-                )) : const SizedBox()
+                )) : const SizedBox() : const SizedBox()
           ],
         ),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             destination != null ?
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FloatingActionButton(
-                backgroundColor: AppColor.orange,
-                onPressed: () {
-                  _goToDestination(destination!);
-                },
-                child: const Icon(Icons.near_me),
-              ),
+            FloatingActionButton(
+              heroTag: "btn1",
+              backgroundColor: AppColor.orange,
+              onPressed: () {
+                _goToDestination(destination!);
+              },
+              child: const Icon(Icons.near_me),
             ) : const SizedBox(),
             const SizedBox(height: 10,),
             Padding(
-              padding: parkingNearby != null ? const EdgeInsets.only(bottom: 140.0) : const EdgeInsets.all(0),
+              padding: parkingNearby != null ? parkingNearby!.data!.isNotEmpty ?  const EdgeInsets.only(bottom: 140.0) : const EdgeInsets.all(0) : const EdgeInsets.all(0),
               child: FloatingActionButton(
+                heroTag: "btn2",
                 backgroundColor: AppColor.navy,
                 onPressed: _currentLocation,
                 child: const Icon(Icons.location_searching_rounded, color: AppColor.navyPale),

@@ -95,7 +95,12 @@ class _BookingPageState extends State<BookingPage> {
                                 ),
                               ),
                               onPressed: () {
-
+                                cancelBooking(widget.bookingId, context);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>  const MyBottomBar(selectedInit: 0,)),
+                                );
                               },
                               child:  const SemiBoldText(text: 'Hủy đơn', fontSize: 13, color: Colors.white)
                           ),
@@ -136,7 +141,25 @@ class _BookingPageState extends State<BookingPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CouponCard(
+                      booking.bookingDetails!.status == 'Done' || booking.bookingDetails!.status == 'Cancel'?
+                       Container(
+                         padding: const EdgeInsets.only(
+                             left: 30, right: 30, top: 20, bottom: 20),
+                         height: 300,
+                         width: double.infinity,
+                         decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(20),
+                             color: Colors.white),
+                         child: Column(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           children: [
+                             SvgPicture.asset(booking.bookingDetails!.status == 'Done' ? 'assets/icon/car_sucess.svg' : 'assets/icon/car_cancel.svg'),
+                             const SizedBox(height: 26,),
+                             SemiBoldText(text: booking.bookingDetails!.status == 'Done' ? 'Hoàn thành' : 'Hủy đơn', fontSize: 24, color: AppColor.forText)
+                           ],
+                         ),
+                      ) : CouponCard(
                           backgroundColor: Colors.white,
                           curvePosition: 340,
                           borderRadius: 30,
@@ -160,7 +183,7 @@ class _BookingPageState extends State<BookingPage> {
                                 children: [
                                   const RegularText(text: 'Giờ ra tạm tính : ', fontSize: 16, color: AppColor.forText),
                                   const SizedBox(width: 10,),
-                                  SemiBoldText(text: DateFormat('HH:mm - dd/MM/yyyy').format(booking.bookingDetails!.startTime!).toString(),
+                                  SemiBoldText(text: DateFormat('HH:mm - dd/MM/yyyy').format(booking.bookingDetails!.endTime!).toString(),
                                       fontSize: 17,
                                       color: AppColor.forText)
                                 ],
@@ -174,7 +197,7 @@ class _BookingPageState extends State<BookingPage> {
                       Container(
                         padding: const EdgeInsets.only(
                             left: 30, right: 30, top: 20, bottom: 20),
-                        height: 129,
+                        height: 180,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white),
@@ -204,6 +227,37 @@ class _BookingPageState extends State<BookingPage> {
                                     color: AppColor.forText)
                               ],
                             ),
+                            booking.bookingDetails!.guestPhone != null ? Column(
+                              children: [
+                                const Divider(thickness: 1, color: AppColor.fadeText,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children:  [
+                                    const MediumText(
+                                        text: 'Số người đặt hộ',
+                                        fontSize: 14,
+                                        color: AppColor.forText),
+                                    SemiBoldText(
+                                        text: booking.bookingDetails!.guestPhone!,
+                                        fontSize: 14,
+                                        color: AppColor.forText)
+                                  ],
+                                ),
+                                const SizedBox(height: 8,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children:  [
+                                    const MediumText(text: 'Tên người đặt hộ', fontSize: 14, color: AppColor.forText),
+                                    SemiBoldText(
+                                        text: booking.bookingDetails!.guestName!,
+                                        fontSize: 14,
+                                        color: AppColor.forText)
+                                  ],
+                                ),
+                              ],
+                            ) : const SizedBox(),
+
+
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children:  [
@@ -449,7 +503,7 @@ class TicketData extends StatelessWidget {
         const SizedBox(height: 8,),
         const RegularText(text: 'Đưa mã này cho nhân viên', fontSize: 16, color: AppColor.fadeText),
         const SizedBox(height: 8,),
-        Container(
+        SizedBox(
           width: double.infinity,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -488,14 +542,13 @@ class TicketData extends StatelessWidget {
         const SizedBox(
           height: 29,
         ),
-        Container(
+        SizedBox(
           width: double.infinity,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               InkWell(
                 onTap: () async {
-
                   await Share.share(path);
                 },
                 child: const Row(
