@@ -86,55 +86,52 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height - 500,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:  [
-                      SemiBoldText(
-                          text: 'Nhập số điện thoại để tiếp tục ',
-                          color: Colors.black,
-                          align: TextAlign.left,
-                          fontSize: 20,
-                          maxLine: 2),
-                      SizedBox(height: 2,),
-                      MediumText(
-                          text: 'Nếu số điện thoại của bạn không có trong hệ thống,\n chúng tôi sẽ ghi nhận tài khoản mới cho bạn.',
-                          color: Colors.blueGrey,
-                          maxLine: 2,
-                          fontSize: 12),
-                    ],
-                  ),
-                   TextField(
-                    controller: mobileNumber,
-                     autofocus: true,
-                    keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
-                      hintText: 'Nhập số điện thoại',
-                      hintStyle: TextStyle(color: AppColor.navy,fontWeight: FontWeight.w600, ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: AppColor.orange),
-                      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children:  [
+                    SemiBoldText(
+                        text: 'Nhập số điện thoại để tiếp tục ',
+                        color: Colors.black,
+                        align: TextAlign.left,
+                        fontSize: 20,
+                        maxLine: 2),
+                    SizedBox(height: 2,),
+                    MediumText(
+                        text: 'Nếu số điện thoại của bạn không có trong hệ thống,\n chúng tôi sẽ ghi nhận tài khoản mới cho bạn.',
+                        color: Colors.blueGrey,
+                        maxLine: 2,
+                        fontSize: 12),
+                  ],
+                ),
+                 TextField(
+                  controller: mobileNumber,
+                   autofocus: true,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    hintText: 'Nhập số điện thoại',
+                    hintStyle: TextStyle(color: AppColor.navy,fontWeight: FontWeight.w600, ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColor.orange),
                     ),
-                   ),
-                  const SizedBox(height: 40,),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: SizedBox(
-                        width: double.infinity,
-                        child: MyButton(
-                          text: 'Tiếp tục',
-                          textColor: AppColor.navyPale,
-                          backgroundColor: AppColor.navy,
-                          function: submit,
-                        )),
-                  )
-                ],
-              ),
+                  ),
+                 ),
+                const SizedBox(height: 40,),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                      width: double.infinity,
+                      child: MyButton(
+                        text: 'Tiếp tục',
+                        textColor: AppColor.navyPale,
+                        backgroundColor: AppColor.navy,
+                        function: submit,
+                      )),
+                )
+              ],
             ),
           ),
         ],
