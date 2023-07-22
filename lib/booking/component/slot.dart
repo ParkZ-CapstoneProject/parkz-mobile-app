@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/text/regular.dart';
+import 'package:parkz/utils/text/semi_bold.dart';
 
 class Slot extends StatefulWidget {
-  final int index;
-  final int cellIndex;
+  final int srow;
+  final int scell;
+  final String name;
+  final int slotId;
+  final bool isBooked;
   final bool isSelected;
-  const Slot({Key? key, required this.index, required this.cellIndex, required this.isSelected}) : super(key: key);
+  const Slot({Key? key,  required this.isSelected, required this.slotId, required this.isBooked, required this.srow, required this.scell, required this.name}) : super(key: key);
 
   @override
   State<Slot> createState() => _SlotState();
@@ -18,7 +22,7 @@ class _SlotState extends State<Slot> {
   Widget build(BuildContext context) {
     return  Stack(
       children: [
-        widget.isSelected ?
+        widget.isSelected == true && widget.isBooked == false?
         Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
@@ -30,19 +34,19 @@ class _SlotState extends State<Slot> {
               ]
               )
           ),
-        ):
-        Container()
+        ): Container()
         ,
         Container(
             padding: const EdgeInsets.all(8),
-            height: 119,
+            height: 120,
             width: 140,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                widget.index.isOdd ? SvgPicture.asset('assets/icon/car_slot.svg', height: 55, width: 114) : Container() ,
-                RegularText(text: 'Row ${widget.index + 1}, Cell ${widget.cellIndex + 1}', color: AppColor.forText, fontSize: 13),
+                widget.isBooked == true ? SvgPicture.asset('assets/icon/car_slot.svg', height: 55, width: 114) : const SizedBox(height: 55, width: 114,) ,
+                SemiBoldText(text: widget.name, fontSize: 15, color: AppColor.forText, align: TextAlign.right),
+                RegularText(text: 'Hàng ${widget.srow +1 }, Cột ${widget.scell + 1}', color: AppColor.forText, fontSize: 12),
               ],
             )
         ),

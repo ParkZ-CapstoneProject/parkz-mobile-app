@@ -48,11 +48,7 @@ class _CardIdentificationPageState extends State<CardIdentificationPage> {
               icon:
                   const Icon(Icons.arrow_back, color: AppColor.forText),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AuthenticationPage()),
-                );
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AuthenticationPage()),);
               },
             );
           },

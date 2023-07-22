@@ -6,7 +6,8 @@
    <application
         android:label="ParkZ"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+       android:networkSecurityConfig="@xml/network_security_config"
+       android:icon="@mipmap/launcher_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyBNimd5TrhHAV40TsVTYFQAPOZpkoSRvkM"/>
         <activity

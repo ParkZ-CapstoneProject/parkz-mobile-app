@@ -5,6 +5,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:parkz/splash_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'network/api.dart';
+
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // title
@@ -26,7 +28,8 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   String? fcmToken = await FirebaseMessaging.instance.getToken();
-  print('Device tokken ne: $fcmToken');
+  await storage.write(key: 'DeviceToken', value: fcmToken);
+  print('Device token ne: $fcmToken');
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:parkz/booking/booking_slot_page.dart';
+import 'package:parkz/network/api.dart';
+import 'package:parkz/parkingdetail/parking_detail_page.dart';
 import 'package:parkz/utils/button/button_widget.dart';
 import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import '../../model/floors_response.dart';
 
 class BottomParkingBar extends StatefulWidget {
   final double containerPadding;
@@ -14,11 +18,26 @@ class BottomParkingBar extends StatefulWidget {
 
   @override
   State<BottomParkingBar> createState() => _BottomParkingBarState();
+  static int durationGlobal = 0;
+  static int startTimeGlobal = 0;
+  static int endTimeGlobal = 0;
+  static DateTime startDayGlobal = DateTime.now();
+  static DateTime startDateTimeGlobal = DateTime.now();
+  static DateTime endDateTimeGlobal = DateTime.now();
+  static DateTime endDayGlobal = DateTime.now();
 }
 
 class _BottomParkingBarState extends State<BottomParkingBar> {
+  late int _durationSelected = 0;
+  late int _startTime = 0;
+  late int _endTime = 0;
+  late DateTime? _selectedDay = DateTime.now();
+
+
   @override
   Widget build(BuildContext context) {
+
+
     return Container(
       decoration: BoxDecoration(
         boxShadow: <BoxShadow>[
@@ -45,7 +64,7 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
             children: [
               InkWell(
                 onTap: () {
-                  showBookingPopup(context);
+                  showBookingPopup();
                 },
                 child: Container(
                   width: double.infinity,
@@ -59,43 +78,37 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        children: const [
-                          Icon(Icons.timer_sharp,
-                              size: 25, color: AppColor.forText),
-                          SizedBox(
-                            width: 10,
-                          ),
+                        children:  [
+                          const Icon(Icons.timer_sharp, size: 25, color: AppColor.forText),
+
+                          const SizedBox(width: 10,),
+
                           SemiBoldText(
-                            text: '1 giờ',
+                            text: '$_durationSelected giờ',
                             color: AppColor.forText,
                             fontSize: 15,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 2,
                           ),
-                          VerticalDivider(
-                            thickness: 1,
-                            color: AppColor.forText,
-                            endIndent: 2,
-                            indent: 2,
+                          const VerticalDivider(thickness: 2, color: AppColor.forText, endIndent: 2, indent: 2,
                           ),
-                          SizedBox(
-                            width: 2,
-                          ),
+
+                          const SizedBox(width: 2,),
+
                           SemiBoldText(
-                            text: '08:00',
+                            text: '$_startTime:00',
                             color: AppColor.forText,
                             fontSize: 15,
                           ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Icon(Icons.arrow_forward_outlined, size: 15),
-                          SizedBox(
-                            width: 5,
-                          ),
+
+                          const SizedBox(width: 5,),
+
+                          const Icon(Icons.arrow_forward_outlined, size: 15),
+
+                          const SizedBox(width: 5,),
                           SemiBoldText(
-                            text: '09:00 , 29/04',
+                            text: '$_endTime:00 , ${DateFormat('dd/MM').format(_selectedDay!)}',
                             color: AppColor.forText,
                             fontSize: 15,
                           ),
@@ -110,12 +123,29 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                 width: double.infinity,
                 child: MyButton(
                     text: 'Đặt chỗ',
-                    function: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const BookingSlotPage()),
+                    function: () async {
+                      List<Floor> response = await getFloorsByParking(ParkingDetailPage.parkingIdGlobal, context);
+                      DateTime startDateTime = DateTime(
+                        _selectedDay!.year,
+                        _selectedDay!.month,
+                        _selectedDay!.day,
+                        _startTime,
                       );
+                      BottomParkingBar.startDateTimeGlobal = startDateTime;
+
+                      DateTime endDateTime = DateTime(
+                        BottomParkingBar.endDayGlobal.year,
+                        BottomParkingBar.endDayGlobal.month,
+                        BottomParkingBar.endDayGlobal.day,
+                        BottomParkingBar.endTimeGlobal,
+                      );
+
+                      BottomParkingBar.endDateTimeGlobal = endDateTime;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>  BookingSlotPage(floors: response, startTime: startDateTime, endTime: endDateTime,)),
+                        );
                     },
                     textColor: Colors.white,
                     backgroundColor: AppColor.navy),
@@ -127,16 +157,26 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
     );
   }
 
-  void showBookingPopup(BuildContext context) {
-     DateTime _focusedDay = DateTime.now();
-     DateTime? _selectedDay = _focusedDay;
-     int durationSelected = 0;
-    int hourSelected = 0;
+  void showBookingPopup() {
+    DateTime currentDate = DateTime.now();
+    DateTime focusedDay = DateTime.now();
+    late int durationSelected = 0;
+    late int startTime = 0;
+    late int endTime = 0;
+    late DateTime? selectedDayCalendar = DateTime.now();
+    void updateDate(duration, startTime, endTime, selectedDay){
+      setState(() {
+        _durationSelected = duration;
+        _startTime = startTime;
+        _endTime = endTime;
+        _selectedDay = selectedDay;
+      });
+    }
     showModalBottomSheet<void>(
       isScrollControlled: true,
       context: context,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+
       builder: (context) {
         return StatefulBuilder(builder: (context, setState) {
           return Container(
@@ -166,15 +206,12 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const RegularText(
-                              text: 'Ngày vào',
-                              fontSize: 14,
-                              color: AppColor.forText),
-                          const SizedBox(
-                            height: 2,
-                          ),
+                          const RegularText(text: 'Ngày vào', fontSize: 14, color: AppColor.forText),
+
+                          const SizedBox(height: 2,),
+
                           SemiBoldText(
-                              text: DateFormat('dd/MM').format(_selectedDay!),
+                              text: DateFormat('dd/MM').format(selectedDayCalendar!),
                               fontSize: 16,
                               color: AppColor.navy)
                         ],
@@ -188,37 +225,34 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          RegularText(
+                        children:  [
+                          const RegularText(
                               text: 'Giờ vào',
                               fontSize: 14,
                               color: AppColor.forText),
-                          SizedBox(
+                          const SizedBox(
                             height: 2,
                           ),
                           SemiBoldText(
-                              text: '2:00', fontSize: 16, color: AppColor.navy)
+                              text: '$startTime:00', fontSize: 16, color: AppColor.navy)
                         ],
                       ),
-                      const VerticalDivider(
-                        thickness: 1.5,
-                        color: AppColor.navyPale,
-                        endIndent: 3,
-                        indent: 3,
-                      ),
+
+                      const VerticalDivider(thickness: 1.5, color: AppColor.navyPale, endIndent: 3, indent: 3,),
+
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          RegularText(
+                        children:  [
+                          const RegularText(
                               text: 'Thời hạn',
                               fontSize: 14,
                               color: AppColor.forText),
-                          SizedBox(
+                          const SizedBox(
                             height: 2,
                           ),
                           SemiBoldText(
-                              text: '2 giờ', fontSize: 16, color: AppColor.navy)
+                              text: '$durationSelected giờ', fontSize: 16, color: AppColor.navy)
                         ],
                       ),
                     ],
@@ -229,9 +263,7 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: AppColor.navyPale),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.navyPale),
                   child: TableCalendar(
                     calendarBuilders: CalendarBuilders(
                       dowBuilder: (context, day) {
@@ -371,14 +403,14 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                         formatButtonVisible: false, titleCentered: true),
                     rowHeight: 40,
                     lastDay: DateTime.utc(2030),
-                    focusedDay: _focusedDay,
-                    firstDay: _focusedDay,
-                    selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+                    focusedDay: focusedDay,
+                    firstDay: currentDate,
+                    selectedDayPredicate: (day) => isSameDay(day, selectedDayCalendar),
                     availableGestures: AvailableGestures.all,
                     onDaySelected: (selectedDay, focusedDay) {
                       setState(() {
-                        _selectedDay = selectedDay;
-                        print('Ngày nè: ${_selectedDay}');
+                        selectedDayCalendar = selectedDay;
+                        focusedDay = focusedDay;
                       });
                     },
                   ),
@@ -399,18 +431,23 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                       scrollDirection: Axis.horizontal,
                       itemCount: 24, // Set the total number of items
                       itemBuilder: (BuildContext context, int index) {
+                        // int hour = index;
+                        // if (hour <= currentDate.hour) {
+                        //   return const SizedBox(); // Skip rendering for hours in the past
+                        // }
                         return InkWell(
                           onTap: (){
                             setState(() {
-                              hourSelected = index;
+                              startTime = index;
                             });
                           },
+
                           child: Container(
                             margin: const EdgeInsets.only(right: 8.0),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color:  hourSelected == index ? AppColor.orange : AppColor.navyPale),
-                                color: hourSelected == index ? AppColor.paleOrange : AppColor.navyPale,
+                                border: Border.all(color:  startTime == index ? AppColor.orange : AppColor.navyPale),
+                                color: startTime == index ? AppColor.paleOrange : AppColor.navyPale,
                             ),
                             padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8, bottom: 8),
                             child:  SemiBoldText(
@@ -420,16 +457,17 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                             ),
                           ),
                         );
+
                       }),
                 ),
 
-                SizedBox(
-                  height: 16,
-                ),
-                SemiBoldText(
+                const SizedBox(height: 16,),
+
+                const SemiBoldText(
                     text: 'Chọn thời hạn',
                     fontSize: 15,
                     color: AppColor.forText),
+
                 const SizedBox(height: 8,),
                 SizedBox(
                   height:
@@ -441,15 +479,15 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                         return InkWell(
                           onTap: (){
                             setState(() {
-                              durationSelected = index;
+                              durationSelected = index +1 ;
                             });
                           },
                           child: Container(
                             margin: const EdgeInsets.only(right: 8.0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color:  durationSelected == index ? AppColor.orange : AppColor.navyPale),
-                              color: durationSelected == index ? AppColor.paleOrange : AppColor.navyPale,
+                              border: Border.all(color:  durationSelected - 1 == index ? AppColor.orange : AppColor.navyPale),
+                              color: durationSelected - 1 == index ? AppColor.paleOrange : AppColor.navyPale,
                             ),
                             padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8, bottom: 8),
                             child:  SemiBoldText(
@@ -461,12 +499,26 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                         );
                       }),
                 ),
-                SizedBox(
-                  height: 24,
-                ),
+
+                const SizedBox(height: 24,),
+
                 MyButton(
                   text: 'Áp dụng',
                   function: () {
+                    endTime = (startTime + durationSelected) % 24;
+                    
+                    updateDate(durationSelected, startTime, endTime, selectedDayCalendar);
+                    // Update static value
+                    BottomParkingBar.durationGlobal = durationSelected;
+                    BottomParkingBar.startTimeGlobal = startTime;
+                    BottomParkingBar.endTimeGlobal = endTime;
+                    BottomParkingBar.startDayGlobal = selectedDayCalendar!;
+                    
+                    if(startTime > endTime){
+                      BottomParkingBar.endDayGlobal = selectedDayCalendar!.add(const Duration(days: 1));
+                    }else {
+                      BottomParkingBar.endDayGlobal = selectedDayCalendar!;
+                    }
                     Navigator.pop(context);
                   },
                   textColor: Colors.white,
@@ -476,6 +528,7 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
               ],
             ),
           );
+
         });
       },
     );

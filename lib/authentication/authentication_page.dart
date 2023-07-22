@@ -33,32 +33,34 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
     RegExp regex = RegExp(r'(84|0[3|5|7|8|9])+([0-9]{8})\b');
 
     if (regex.hasMatch(mobileNumber.text)) {
+
       Utils(context).startLoading();
       //set phone value
       AuthenticationPage.phone = mobileNumber.text;
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>  const OtpPage()));
 
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: '+84 ${mobileNumber.text.substring(1)}',
-
-        verificationCompleted: (PhoneAuthCredential credential) {
-          Utils(context).showSuccessSnackBar('Thành công');
-        },
-
-        verificationFailed: (FirebaseAuthException e) {
-          Utils(context).stopLoading();
-          Utils(context).showErrorSnackBar('Xác thực thất bại: $e');
-        },
-
-        codeSent: (String verificationId, int? resendToken) {
-          AuthenticationPage.verify = verificationId;
-
-          Utils(context).stopLoading();
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>  const OtpPage()),
-          );
-        },
-        //Chưa biết làm gì
-        codeAutoRetrievalTimeout: (String verificationId) {},
-      );
+      // await FirebaseAuth.instance.verifyPhoneNumber(
+      //   phoneNumber: '+84 ${mobileNumber.text.substring(1)}',
+      //
+      //   verificationCompleted: (PhoneAuthCredential credential) {
+      //     Utils(context).showSuccessSnackBar('Thành công');
+      //   },
+      //
+      //   verificationFailed: (FirebaseAuthException e) {
+      //     Utils(context).stopLoading();
+      //     Utils(context).showErrorSnackBar('Xác thực thất bại: $e');
+      //   },
+      //
+      //   codeSent: (String verificationId, int? resendToken) {
+      //     AuthenticationPage.verify = verificationId;
+      //
+      //     Utils(context).stopLoading();
+      //     Navigator.push(context, MaterialPageRoute(builder: (context) =>  const OtpPage()),
+      //     );
+      //   },
+      //   //Chưa biết làm gì
+      //   codeAutoRetrievalTimeout: (String verificationId) {},
+      // );
 
     } else {
       Utils(context).showErrorSnackBar('Số điện thoại không hợp lệ');

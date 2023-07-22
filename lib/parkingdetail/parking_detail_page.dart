@@ -16,6 +16,10 @@ class ParkingDetailPage extends StatefulWidget {
 
   @override
   State<ParkingDetailPage> createState() => _ParkingDetailPageState();
+  static int parkingIdGlobal = -1;
+  static String parkingAva ="";
+  static String parkingName = "";
+  static String parkingAddress = "";
 }
 
 class _ParkingDetailPageState extends State<ParkingDetailPage> {
@@ -25,7 +29,10 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
 
   @override
   void initState() {
+    //Add ID in here
+    ParkingDetailPage.parkingIdGlobal = widget.id;
     _imageController = PageController(initialPage: _currentImage);
+
     super.initState();
   }
 
@@ -38,7 +45,6 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
   @override
   Widget build(BuildContext context) {
     double containerPadding = 24;
-    print('id: ${widget.id}');
     return FutureBuilder<ParkingDetailResponse>(
       future: getParkingDetail(widget.id),
       builder: (context, snapshot) {
@@ -60,14 +66,17 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
               imageUrls.add(parkingSpot.imgPath!);
             }
           }
+            //Add address and name
+            ParkingDetailPage.parkingAva = imageUrls.first;
+            ParkingDetailPage.parkingName = snapshot.data!.data!.parking!.name!;
+            ParkingDetailPage.parkingAddress = snapshot.data!.data!.parking!.address!;
 
-        ParkingHasPrice carPrice = ParkingHasPrice();
-          ParkingHasPrice motoPrice = ParkingHasPrice();
-          if(snapshot.data!.data!.parking!.parkingHasPrices != null){
-            carPrice = snapshot.data!.data!.parking!.parkingHasPrices!.firstWhere((parkingHasPrice) => parkingHasPrice.parkingPrice?.traffic?.trafficId == 1,orElse: () => carPrice ,);
-            motoPrice = snapshot.data!.data!.parking!.parkingHasPrices!.firstWhere((parkingHasPrice) => parkingHasPrice.parkingPrice?.traffic?.trafficId == 2, orElse: () => motoPrice,);
-          }
-
+            ParkingHasPrice carPrice = ParkingHasPrice();
+              ParkingHasPrice motoPrice = ParkingHasPrice();
+              if(snapshot.data!.data!.parking!.parkingHasPrices != null){
+                carPrice = snapshot.data!.data!.parking!.parkingHasPrices!.firstWhere((parkingHasPrice) => parkingHasPrice.parkingPrice?.traffic?.trafficId == 1,orElse: () => carPrice ,);
+                motoPrice = snapshot.data!.data!.parking!.parkingHasPrices!.firstWhere((parkingHasPrice) => parkingHasPrice.parkingPrice?.traffic?.trafficId == 2, orElse: () => motoPrice,);
+              }
 
           return Scaffold(
             backgroundColor: AppColor.navyPale,
@@ -78,6 +87,7 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
               backgroundColor: Colors.white,
               title: const SemiBoldText(text: 'Chi tiết bãi xe', fontSize: 20, color: AppColor.forText),
             ),
+
             bottomNavigationBar: BottomParkingBar(containerPadding: containerPadding),
 
             body: SingleChildScrollView(

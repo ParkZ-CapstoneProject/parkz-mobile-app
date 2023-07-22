@@ -77,7 +77,7 @@ class _OtpPageState extends State<OtpPage> with CodeAutoFill {
                       align: TextAlign.left,
                       fontSize: 24,
                       maxLine: 2),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   MediumText(
@@ -145,37 +145,33 @@ class _OtpPageState extends State<OtpPage> with CodeAutoFill {
                           text: 'Tiếp tục',
                           textColor: AppColor.navyPale,
                           backgroundColor: AppColor.navy,
-                          function: () async {
-                            if(codeValue.length < 6){
-                              Utils(context).showErrorSnackBar('Mã OTP không được bỏ trống');
-                            }
-                            else{
-                              try{
-                                Utils(context).startLoading();
-                                if(codeValue != "123456"){
-                                  PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: AuthenticationPage.verify, smsCode: codeValue);
-                                  await auth.signInWithCredential(credential);
-                                }
-                                LoginResponse reponse = await login(AuthenticationPage.phone);
-                                Utils(context).stopLoading();
-                                if(reponse.data == null){
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const CardIdentificationPage()),
-                                  );
-                                }
-                                else {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const MyBottomBar(selectedInit: 0)),
-                                  );
-                                };
-                              }catch(e){
-                                Utils(context).stopLoading();
-                                Utils(context).showErrorSnackBar('Mã OTP không hợp lệ');
+                          function:
+                            () async {
+                              if(codeValue.length < 6){
+                                Utils(context).showErrorSnackBar('Mã OTP không được bỏ trống');
                               }
+                              else{
+                                try{
+                                  Utils(context).startLoading();
+                                  if(codeValue != "123456"){
+                                    PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: AuthenticationPage.verify, smsCode: codeValue);
+                                    await auth.signInWithCredential(credential);
+                                  }
+                                  LoginResponse reponse = await login(AuthenticationPage.phone);
+                                  Utils(context).stopLoading();
+                                  if(reponse.data == null){
+                                    await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const CardIdentificationPage()),);
+                                  }
+                                  else {
+                                    await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyBottomBar(selectedInit: 0)),);
 
-                            }
+                                  };
+                                }catch(e){
+                                  Utils(context).stopLoading();
+                                  Utils(context).showErrorSnackBar('Mã OTP không hợp lệ');
+                                  throw Exception('Fail to login: $e');
+                              }
+                            };
                           },
                         )),
                   )

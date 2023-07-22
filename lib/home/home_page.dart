@@ -115,6 +115,7 @@ class _HomePageState extends State<HomePage> {
                 background: Image.asset('assets/image/home_banner.png', width: double.infinity, fit: BoxFit.cover),
               ),
             ),
+
             const SliverToBoxAdapter(child: SizedBox(height: 12,width: double.infinity,)),
             SliverToBoxAdapter(
               child: Container(
@@ -124,7 +125,10 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     const SizedBox(height: 16),
 
-                    const TitleList(title: 'Gần bạn', page: ParkingListPage()),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20.0, right: 16),
+                      child: TitleList(title: 'Gần bạn', page: ParkingListPage()),
+                    ),
 
                     FutureBuilder<NearestParkingResponse>(
                       future: getNearestParking(lat, long),
@@ -193,7 +197,10 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 16),
-                    const TitleList(title: 'Danh sách nổi bật', page: ParkingListPage()),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20.0, right: 16),
+                      child: TitleList(title: 'Danh sách nổi bật', page: ParkingListPage()),
+                    ),
 
                     FutureBuilder<RatingHomeResponse>(
                       future: getParkingListHome(),
@@ -209,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                               itemBuilder: (context, index) {
                                 return ParkingCardHome(
                                   title: snapshot.data!.data![index].parkingShowInCusDto!.name!,
-                                  imagePath: snapshot.data!.data![index].parkingShowInCusDto!.avatar!,
+                                  imagePath: snapshot.data!.data![index].parkingShowInCusDto!.avatar,
                                   rating: snapshot.data!.data![index].parkingShowInCusDto!.stars,
                                   motoPrice: snapshot.data!.data![index].priceMoto,
                                   carPrice: snapshot.data!.data![index].priceCar,

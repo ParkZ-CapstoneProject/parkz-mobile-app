@@ -74,9 +74,7 @@ class _ActivityCardState extends State<ActivityCard> {
                   ),
                 ],
               ),
-
-
-              const StatusTag()
+               const StatusTag(status: 'Done',)
             ],
           ),
           const Divider(

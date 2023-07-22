@@ -10,13 +10,13 @@ import 'package:parkz/utils/text/semi_bold.dart';
 class ParkingCardHome extends StatefulWidget {
   final int id;
   final String title;
-  final String imagePath;
+  final String? imagePath;
   final double? rating;
   final double? carPrice;
   final double? motoPrice;
   final String address;
   final bool isFavorite;
-  const ParkingCardHome({Key? key, required this.title, required this.imagePath, required this.rating, required this.address, required this.isFavorite, required this.id, this.carPrice, this.motoPrice}) : super(key: key);
+  const ParkingCardHome({Key? key, required this.title,  this.imagePath, required this.rating, required this.address, required this.isFavorite, required this.id, this.carPrice, this.motoPrice}) : super(key: key);
 
   @override
   State<ParkingCardHome> createState() => _ParkingCardHomeState();
@@ -71,7 +71,7 @@ class _ParkingCardHomeState extends State<ParkingCardHome> {
                 child: ClipRRect(
                   borderRadius:  BorderRadius.only(topLeft: Radius.circular(cardBorder), bottomLeft:Radius.circular(cardBorder) ),
                   child: Image.network(
-                    widget.imagePath,
+                    widget.imagePath != null ? widget.imagePath! : 'https://ma-hub.imgix.net/wp-images/2019/11/17203220/final-cut-pro-missing-file.jpg?w=1600&h=850&auto=format',
                     fit: BoxFit.cover,
                     height: cardHeight,
                     width: double.infinity,

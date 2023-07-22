@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:parkz/network/api.dart';
 import 'package:parkz/utils/constanst.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -77,6 +78,8 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     getLatLong(context);
+    updateDeviceToken();
+
     return Scaffold(
       backgroundColor: AppColor.navy,
       body: Center(
