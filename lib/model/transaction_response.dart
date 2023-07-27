@@ -9,7 +9,7 @@ TransactionResponse transactionResponseFromJson(String str) => TransactionRespon
 String transactionResponseToJson(TransactionResponse data) => json.encode(data.toJson());
 
 class TransactionResponse {
-  final List<Datum>? data;
+  final List<Transaction>? data;
   final bool? success;
   final String? message;
   final int? statusCode;
@@ -24,7 +24,7 @@ class TransactionResponse {
   });
 
   factory TransactionResponse.fromJson(Map<String, dynamic> json) => TransactionResponse(
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<Transaction>.from(json["data"]!.map((x) => Transaction.fromJson(x))),
     success: json["success"],
     message: json["message"],
     statusCode: json["statusCode"],
@@ -40,7 +40,7 @@ class TransactionResponse {
   };
 }
 
-class Datum {
+class Transaction {
   final int? transactionId;
   final double? price;
   final String? status;
@@ -48,7 +48,7 @@ class Datum {
   final String? description;
   final DateTime? createdDate;
 
-  Datum({
+  Transaction({
     this.transactionId,
     this.price,
     this.status,
@@ -57,7 +57,7 @@ class Datum {
     this.createdDate,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
     transactionId: json["transactionId"],
     price: json["price"],
     status: json["status"],

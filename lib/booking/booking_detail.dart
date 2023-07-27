@@ -256,8 +256,8 @@ class _BookingDetailState extends State<BookingDetail> {
                                     context
                                 );
                               if(bookingId != null){
-                                print('BookingIDne: $bookingId');
-                                      await Navigator.push(
+                                debugPrint('BookingIDne: $bookingId');
+                                      await Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>  BookingPage(bookingId: bookingId,)),

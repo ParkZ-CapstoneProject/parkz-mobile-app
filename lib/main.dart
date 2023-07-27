@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
                 channelDescription: channel.description,
                 color: Colors.blue,
                 playSound: true,
-                icon: 'assets/logo/parkz.png',
+                icon: '@mipmap/ic_launcher',
               ),
             ));
       }

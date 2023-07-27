@@ -17,18 +17,15 @@ class _VnPayPageState extends State<VnPayPage> {
 
     final WebViewController webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      // ..setNavigationDelegate(NavigationDelegate(
-      //   // onPageFinished: (url) {
-      //   //   debugPrint('url change 2: ${url}');
-      //   //   if (url.contains(successURL)) {
-      //   //     debugPrint('url change: ${url}');
-      //   //   }
-      //   //
-      //   // },
-      //   // onUrlChange: (UrlChange change) {
-      //   //
-      //   // },
-      // ))
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageFinished: (url) {
+          debugPrint('url change 2: ${url}');
+          if (url.contains(successURL)) {
+            debugPrint('url change: ${url}');
+            Navigator.pop(context, true);
+          }
+        },
+      ))
       ..loadRequest(Uri.parse(widget.urlVNPay));
 
     return SafeArea(

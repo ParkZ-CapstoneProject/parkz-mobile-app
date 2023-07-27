@@ -376,20 +376,10 @@ Future <void> updateDeviceToken() async {
 // Booking
 Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleInforId,int payment, guessName, guessPhone, context) async {
   String paymentMethod = payment == 1 ? 'tra_sau' : 'thanh_toan_online';
-
   String? deviceToken = await storage.read(key: 'DeviceToken');
   String? userID = await storage.read(key: 'userID');
-  print('---Booking---');
-  print('parkingSlotId: $slotId');
-  print('startTime: $startTime');
-  print('endTime: $endTime');
-  print('dateBook: $dateBook');
-  print('vehicleInforId: $vehicleInforId');
-  print('userID: $userID');
-  print('DeviceToken: $deviceToken');
-  print('guessName: $guessName');
-  print('guessPhone: $guessPhone');
   try {
+    Utils(context).startLoading();
     if (deviceToken != null && userID != null){
       Map<String, dynamic> requestBody = {
         'bookingDto': {
@@ -397,14 +387,18 @@ Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleI
           'startTime': startTime,
           'endTime': endTime,
           'dateBook': dateBook,
-          'guestName': guessName,
-          'guestPhone': guessPhone,
+          if (guessName != null) 'guestName': guessName,
+          if (guessPhone != null) 'guestPhone': guessPhone,
           'paymentMethod': paymentMethod,
           'vehicleInforId': vehicleInforId,
           'userId': int.parse(userID),
         },
         'deviceToKenMobile': deviceToken,
       };
+      // Print the request body before sending
+      print('---Request Body Booking---');
+      print(jsonEncode(requestBody));
+
       var response = await http.post(
         Uri.parse('$host/api/customer-booking'),
         headers : {'Content-Type': 'application/json'},
@@ -413,19 +407,25 @@ Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleI
       if (response.statusCode >= 200 && response.statusCode <300) {
         final responseJson = jsonDecode(response.body);
         BookingResponse bookingResponse =  BookingResponse.fromJson(responseJson);
+        Utils(context).stopLoading();
         return bookingResponse.data;
       } else {
         if(response.statusCode >= 400 && response.statusCode <500){
           final responseJson = jsonDecode(response.body);
           BookingResponse bookingResponse =  BookingResponse.fromJson(responseJson);
+          Utils(context).stopLoading();
           Utils(context).showWarningSnackBar('${bookingResponse.message}');
+          return null;
         }else{
+          Utils(context).stopLoading();
+          Utils(context).showWarningSnackBar('Không thể đồng bộ Device token ${response.statusCode}');
           throw Exception('Fail to create booking: Status code ${response.statusCode} Message ${response.body}');
         }
       }
     }else {
       Utils(context).showWarningSnackBar('Cần đăng nhập');
     }
+    Utils(context).stopLoading();
     return null;
   }catch (e){
     throw Exception('Fail to create booking: $e');
@@ -504,25 +504,21 @@ Future<CreateVehicleResponse?> createVehicleGuest(licensePlate, vehicleName, col
 
 
 //Nạp tiền vào ví customer
-Future<String> depositWallet(int amount, context) async {
+Future<String?> depositWallet(int amount) async {
   try {
     String? userID = await storage.read(key: 'userID');
-    // String? token = await storage.read(key: 'token');
-
-    if(userID != null /*&& token != null*/){
+    if(userID != null){
       Map<String, dynamic> requestBody = {
         "totalPrice": amount,
         "userId": userID,
       };
       print('totalPrice $amount');
       print('userId $userID');
-      // print('Tokken: $token');
       final response = await http.post(
           Uri.parse('$host/api/wallet/deposit'),
           headers: {
             'Accept': '*/*',
             'Content-Type': 'application/json'
-            // 'Authorization': 'bearer $token',
           },
           body: jsonEncode(requestBody)
       );
@@ -533,19 +529,17 @@ Future<String> depositWallet(int amount, context) async {
           return depositResponse.data!;
         }else{
           // không tìm thấy user
-          Utils(context).showWarningSnackBar(depositResponse.message);
+          throw Exception('Fail to deposit wallet: Status code ${response.statusCode} Message ${response.body}');
         }
       }else {
         if(response.statusCode >= 400 && response.statusCode <500){
-          final responseJson = jsonDecode(response.body);
-          WalletDepositResponse depositResponse = WalletDepositResponse.fromJson(responseJson);
-          Utils(context).showWarningSnackBar('${depositResponse.message}');
+          throw Exception('Fail to deposit wallet: Status code ${response.statusCode} Message ${response.body}');
         }else{
           throw Exception('Fail to deposit wallet: Status code ${response.statusCode} Message ${response.body}');
         }
       }
     }
-    throw Exception('Fail to deposit wallet');
+    return null;
   } catch (e) {
     throw Exception('Fail to deposit wallet: $e');
   }

@@ -12,20 +12,22 @@ class StatusTag extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: AppColor.navyPale,
+        color: status == "OverTime" ? AppColor.paleOrange : AppColor.navyPale,
       ),
       child:  RegularText(
           fontSize: 13,
           text: status == "Initial" ? 'Chờ xác nhận'
-              : status == "Approve" ? 'Chờ vào bãi'
-              : status == "Checkin" ? "Chờ ra bãi"
-              : status == "Checkout" ? "Chờ thanh toán"
+              : status == "Success" ? 'Chờ vào bãi'
+              : status == "Check_In" ? "Chờ ra bãi"
+              : status == "Check_Out" ? "Chờ thanh toán"
+              : status == "OverTime" ? "Quá giờ"
               :  status == "Done" ? "Hoàn thành"
               : "Hủy đơn",
           color: status == "Initial" ? AppColor.orange
-              : status == "Approve" ? AppColor.navy
-              : status == "Checkin" ? AppColor.forText
-              : status == "Checkout" ? AppColor.orange
+              : status == "Success" ? AppColor.navy
+              : status == "Check_In" ? AppColor.forText
+              : status == "OverTime" ? AppColor.forText
+              : status == "Check_Out" ? AppColor.orange
               :  status == "Done" ? Colors.green
               : Colors.red
       ),

@@ -96,6 +96,7 @@ flutter:
     - assets/
     - assets/logo/
     - assets/image/
+    - assets/logo/parkz.png
     - assets/icon/
     - assets/json/
     - assets/json/empty/

@@ -30,7 +30,7 @@ class _AccountPageState extends State<AccountPage> {
   }
   @override
   Widget build(BuildContext context) {
-    print('User Token: + $_token');
+    debugPrint('User Token: + $_token');
     if(_token != null){
       return const AccountProfile();
     }
