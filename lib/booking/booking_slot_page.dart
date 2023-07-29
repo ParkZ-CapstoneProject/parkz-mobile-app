@@ -188,11 +188,10 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
                             onTap: () {
                               setState(() {
                                 selectedSlotIndex = rowIndex * 10 + cellIndex;
-                                if(slot.isBooked != true){
+                                if(slot.isBooked == 0){
                                   slotSelected = slot;
                                 }else{
-                                  Utils(context).showWarningSnackBar('Chỗ đã được đặt, vui lòng chọn chỗ khác');
-
+                                  Utils(context).showWarningSnackBar('Vui lòng chọn chỗ khác');
                                 }
                               }
                               );

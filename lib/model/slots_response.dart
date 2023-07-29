@@ -42,7 +42,7 @@ class SlotsResponse {
 
 class ParkingSlot {
   final ParkingSlotDto? parkingSlotDto;
-  final bool? isBooked;
+  final int? isBooked;
 
   ParkingSlot({
     this.parkingSlotDto,

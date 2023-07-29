@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:parkz/model/ekyc_response.dart';
 import 'package:parkz/model/floors_response.dart';
@@ -244,7 +245,7 @@ Future<SearchParkingResponse?> getParkingNearbyDestination(lat, long, range) asy
       return SearchParkingResponse.fromJson(responseJson);
     }
     if(response.statusCode >= 400 && response.statusCode <500){
-      throw Exception('Fail to create booking: Status code ${response.statusCode} Message ${response.body}');
+      throw Exception('Fail to get parking list nearby: Status code ${response.statusCode} Message ${response.body}');
     }
     return null;
   } catch (e) {
@@ -288,16 +289,22 @@ Future<List<Floor>> getFloorsByParking(id, context) async {
 // Lâý danh sách slots cho bãi xe đật theo tầng
 Future<SlotsResponse> getSlotsParkingByFloor(id, startDateTime, endDateTime) async {
   try {
+    // Print the request body before sending
+    debugPrint('---Request Get Parking Slot---');
+    debugPrint('FloorId : $id');
+    debugPrint('StartTimeBooking : $startDateTime');
+    debugPrint('EndTimeBooking : $endDateTime');
+
     final response = await http.get(
       Uri.parse('$host/api/parking-slots/floors/floorId/parking-slots?FloorId=$id&StartTimeBooking=$startDateTime&EndTimeBooking=$endDateTime'),
       headers: {'accept': 'application/json'},
     );
+
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body);
       return SlotsResponse.fromJson(responseJson);
     } else {
-      throw Exception(
-          'Failed to fetch parking list. Status code: ${response.statusCode}');
+      throw Exception('Failed to fetch parking list. Status code: ${response.statusCode}');
     }
   } catch (e) {
     throw Exception('Fail to get parking detail: $e');
@@ -398,8 +405,8 @@ Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleI
         'deviceToKenMobile': deviceToken,
       };
       // Print the request body before sending
-      print('---Request Body Booking---');
-      print(jsonEncode(requestBody));
+      debugPrint('---Request Body Booking---');
+      debugPrint(jsonEncode(requestBody));
 
       var response = await http.post(
         Uri.parse('$host/api/customer-booking'),
