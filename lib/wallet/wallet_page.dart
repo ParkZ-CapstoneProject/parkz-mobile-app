@@ -254,9 +254,9 @@ class _WalletPageState extends State<WalletPage> {
                                     return  ListTile(
                                       isThreeLine: true,
                                       contentPadding: EdgeInsets.zero,
-                                      leading: listTransation[index].description == 'Nạp tiền vào ví.' ? const Icon(Icons.monetization_on, color: AppColor.navy, size: 30) : const Icon(Icons.monetization_on, color: AppColor.orange, size: 30) ,
-                                      title:  SemiBoldText(text: listTransation[index].description!, fontSize: 17, color: AppColor.forText),
-                                      trailing: SemiBoldText(text: '${moneyFormat(listTransation[index].price!)} đ', fontSize: 15, color: AppColor.forText),
+                                      leading: listTransation[index].status == 'Nap_tien_vao_vi_thanh_cong' ? const Icon(Icons.monetization_on, color: AppColor.navy, size: 30) : const Icon(Icons.monetization_on, color: AppColor.orange, size: 30) ,
+                                      title:  SemiBoldText(text: listTransation[index].description.toString(), fontSize: 17, color: AppColor.forText),
+                                      trailing: SemiBoldText(text: listTransation[index].status == 'Nap_tien_vao_vi_thanh_cong' ? '+ ${moneyFormat(listTransation[index].price!)} đ' : ' - ${moneyFormat(listTransation[index].price!)} đ' , fontSize: 15, color: AppColor.forText),
                                       subtitle: MediumText(text: DateFormat('HH:mm - dd/MM/yyyy').format(listTransation[index].createdDate!).toString(), fontSize: 14, color: AppColor.navy),
                                     );
                                   },

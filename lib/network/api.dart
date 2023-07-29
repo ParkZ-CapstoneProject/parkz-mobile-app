@@ -375,9 +375,11 @@ Future <void> updateDeviceToken() async {
 
 // Booking
 Future<int?> createPostPayBooking(slotId, startTime, endTime, dateBook, vehicleInforId,int payment, guessName, guessPhone, context) async {
-  String paymentMethod = payment == 1 ? 'tra_sau' : 'thanh_toan_online';
+  String paymentMethod = payment == 1 ? 'tra_sau' : 'tra_truoc';
+
   String? deviceToken = await storage.read(key: 'DeviceToken');
   String? userID = await storage.read(key: 'userID');
+
   try {
     Utils(context).startLoading();
     if (deviceToken != null && userID != null){
@@ -501,7 +503,6 @@ Future<CreateVehicleResponse?> createVehicleGuest(licensePlate, vehicleName, col
     throw Exception('Fail to create vehicle: $e');
   }
 }
-
 
 //Nạp tiền vào ví customer
 Future<String?> depositWallet(int amount) async {
@@ -700,20 +701,14 @@ Future<void> cancelBooking(int bookingId, context) async {
           body: jsonEncode(requestBody)
       );
       if (response.statusCode >= 200 && response.statusCode <300) {
-        final responseJson = jsonDecode(response.body);
-        //Giong nhau nen lay cai nay luon duoc
-        WalletDepositResponse depositResponse = WalletDepositResponse.fromJson(responseJson);
-        Utils(context).showSuccessSnackBar(depositResponse.data);
+        Utils(context).showSuccessSnackBar('Hủy đơn thành công');
       }else {
         if(response.statusCode >= 400 && response.statusCode <500){
-          final responseJson = jsonDecode(response.body);
-          WalletDepositResponse depositResponse = WalletDepositResponse.fromJson(responseJson);
-          Utils(context).showWarningSnackBar('${depositResponse.message}');
+          Utils(context).showWarningSnackBar('Hủy đơn thất bại ${response.statusCode}');
         }else{
           throw Exception('Fail to cancel booking: Status code ${response.statusCode} Message ${response.body}');
         }
       }
-    throw Exception('Fail to cancel booking. ko xac dinh');
   } catch (e) {
     throw Exception('Fail to cancel booking: $e');
   }
