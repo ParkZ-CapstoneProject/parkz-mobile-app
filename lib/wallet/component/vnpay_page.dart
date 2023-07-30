@@ -10,7 +10,7 @@ class VnPayPage extends StatefulWidget {
 }
 
 class _VnPayPageState extends State<VnPayPage> {
-  final String successURL = "http://parkzserver-001-site1.btempurl.com/api/VNPayDeposit";
+  final String successURL = "https://parkzserver-001-site1.btempurl.com/api/VNPayDeposit";
 
   @override
   Widget build(BuildContext context) {

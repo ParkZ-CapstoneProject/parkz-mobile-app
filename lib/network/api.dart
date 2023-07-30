@@ -34,7 +34,7 @@ const storage = FlutterSecureStorage();
 
 
 
-const String host = 'http://parkzserver-001-site1.btempurl.com';
+const String host = 'https://parkzserver-001-site1.btempurl.com';
 
 Future ekycRegister(frontID, backID) async {
   String username = 'sst-tester';

@@ -36,7 +36,7 @@ class _WalletPageState extends State<WalletPage> {
     if(vnPayLink != null){
       bool isSucceed = await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) =>   VnPayPage(urlVNPay: vnPayLink,)),
+        MaterialPageRoute(builder: (context) =>  VnPayPage(urlVNPay: vnPayLink,)),
       );
       if(isSucceed == true){
         setState(() {
@@ -255,7 +255,7 @@ class _WalletPageState extends State<WalletPage> {
                                       isThreeLine: true,
                                       contentPadding: EdgeInsets.zero,
                                       leading: listTransation[index].status == 'Nap_tien_vao_vi_thanh_cong' ? const Icon(Icons.monetization_on, color: AppColor.navy, size: 30) : const Icon(Icons.monetization_on, color: AppColor.orange, size: 30) ,
-                                      title:  SemiBoldText(text: listTransation[index].description.toString(), fontSize: 17, color: AppColor.forText),
+                                      title:  SemiBoldText(text: listTransation[index].description == null ? 'Thanh toán đơn' : listTransation[index].description!, fontSize: 17, color: AppColor.forText),
                                       trailing: SemiBoldText(text: listTransation[index].status == 'Nap_tien_vao_vi_thanh_cong' ? '+ ${moneyFormat(listTransation[index].price!)} đ' : ' - ${moneyFormat(listTransation[index].price!)} đ' , fontSize: 15, color: AppColor.forText),
                                       subtitle: MediumText(text: DateFormat('HH:mm - dd/MM/yyyy').format(listTransation[index].createdDate!).toString(), fontSize: 14, color: AppColor.navy),
                                     );
