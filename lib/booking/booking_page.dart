@@ -173,30 +173,34 @@ class _BookingPageState extends State<BookingPage> {
                             borderRadius: 30,
                             height: 450,
                             firstChild:  TicketData(qrPath: booking.bookingDetails!.qrImage!, status: booking.bookingDetails!.status! ,),
-                            secondChild: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const RegularText(text: 'Giờ vào tạm tính : ', fontSize: 16, color: AppColor.forText),
-                                    SemiBoldText(text: DateFormat('HH:mm - dd/MM/yyyy').format(booking.bookingDetails!.startTime!).toString(),
-                                        fontSize: 17,
-                                        color: AppColor.forText)
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const RegularText(text: 'Giờ ra tạm tính : ', fontSize: 16, color: AppColor.forText),
-                                    const SizedBox(width: 10,),
-                                    SemiBoldText(text: DateFormat('HH:mm - dd/MM/yyyy').format(booking.bookingDetails!.endTime!).toString(),
-                                        fontSize: 17,
-                                        color: AppColor.forText)
-                                  ],
-                                )
-                              ],
+                            secondChild: Padding(
+                              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const RegularText(text: 'Dự kiến vào bãi lúc: ', fontSize: 15, color: AppColor.forText),
+                                      SemiBoldText(text: DateFormat('HH:mm - dd/MM/yyyy').format(booking.bookingDetails!.startTime!).toString(),
+                                          fontSize: 17,
+                                          color: AppColor.navy)
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const RegularText(text: 'Dự kiến rời bãi lúc: ', fontSize: 15, color: AppColor.forText),
+                                      const SizedBox(width: 10,),
+                                      SemiBoldText(text: DateFormat('HH:mm - dd/MM/yyyy').format(booking.bookingDetails!.endTime!).toString(),
+                                          fontSize: 17,
+                                          color: AppColor.navy)
+                                    ],
+                                  )
+                                ],
+                              ),
                             )
                         ),
                         const SizedBox(
