@@ -4,11 +4,9 @@
 
 import 'dart:convert';
 
-BookingDetailResponse bookingDetailResponseFromJson(String str) =>
-    BookingDetailResponse.fromJson(json.decode(str));
+BookingDetailResponse bookingDetailResponseFromJson(String str) => BookingDetailResponse.fromJson(json.decode(str));
 
-String bookingDetailResponseToJson(BookingDetailResponse data) =>
-    json.encode(data.toJson());
+String bookingDetailResponseToJson(BookingDetailResponse data) => json.encode(data.toJson());
 
 class BookingDetailResponse {
   final DetailBooking? data;
@@ -25,14 +23,13 @@ class BookingDetailResponse {
     this.count,
   });
 
-  factory BookingDetailResponse.fromJson(Map<String, dynamic> json) =>
-      BookingDetailResponse(
-        data: json["data"] == null ? null : DetailBooking.fromJson(json["data"]),
-        success: json["success"],
-        message: json["message"],
-        statusCode: json["statusCode"],
-        count: json["count"],
-      );
+  factory BookingDetailResponse.fromJson(Map<String, dynamic> json) => BookingDetailResponse(
+    data: json["data"] == null ? null : DetailBooking.fromJson(json["data"]),
+    success: json["success"],
+    message: json["message"],
+    statusCode: json["statusCode"],
+    count: json["count"],
+  );
 
   Map<String, dynamic> toJson() => {
     "data": data?.toJson(),
@@ -63,32 +60,13 @@ class DetailBooking {
   });
 
   factory DetailBooking.fromJson(Map<String, dynamic> json) => DetailBooking(
-    bookingDetails: json["bookingDetails"] == null
-        ? null
-        : BookingDetails.fromJson(json["bookingDetails"]),
+    bookingDetails: json["bookingDetails"] == null ? null : BookingDetails.fromJson(json["bookingDetails"]),
     user: json["user"] == null ? null : User.fromJson(json["user"]),
-    vehicleInfor: json["vehicleInfor"] == null
-        ? null
-        : VehicleInfor.fromJson(json["vehicleInfor"]),
-    parkingWithBookingDetailDto: json["parkingWithBookingDetailDto"] == null
-        ? null
-        : ParkingWithBookingDetailDto.fromJson(
-        json["parkingWithBookingDetailDto"]),
-    parkingSlotWithBookingDetailDto:
-    json["parkingSlotWithBookingDetailDto"] == null
-        ? null
-        : ParkingSlotWithBookingDetailDto.fromJson(
-        json["parkingSlotWithBookingDetailDto"]),
-    floorWithBookingDetailDto: json["floorWithBookingDetailDto"] == null
-        ? null
-        : FloorWithBookingDetailDto.fromJson(
-        json["floorWithBookingDetailDto"]),
-    transactionWithBookingDetailDtos:
-    json["transactionWithBookingDetailDtos"] == null
-        ? []
-        : List<TransactionWithBookingDetailDto>.from(
-        json["transactionWithBookingDetailDtos"]!.map(
-                (x) => TransactionWithBookingDetailDto.fromJson(x))),
+    vehicleInfor: json["vehicleInfor"] == null ? null : VehicleInfor.fromJson(json["vehicleInfor"]),
+    parkingWithBookingDetailDto: json["parkingWithBookingDetailDto"] == null ? null : ParkingWithBookingDetailDto.fromJson(json["parkingWithBookingDetailDto"]),
+    parkingSlotWithBookingDetailDto: json["parkingSlotWithBookingDetailDto"] == null ? null : ParkingSlotWithBookingDetailDto.fromJson(json["parkingSlotWithBookingDetailDto"]),
+    floorWithBookingDetailDto: json["floorWithBookingDetailDto"] == null ? null : FloorWithBookingDetailDto.fromJson(json["floorWithBookingDetailDto"]),
+    transactionWithBookingDetailDtos: json["transactionWithBookingDetailDtos"] == null ? [] : List<TransactionWithBookingDetailDto>.from(json["transactionWithBookingDetailDtos"]!.map((x) => TransactionWithBookingDetailDto.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -96,14 +74,9 @@ class DetailBooking {
     "user": user?.toJson(),
     "vehicleInfor": vehicleInfor?.toJson(),
     "parkingWithBookingDetailDto": parkingWithBookingDetailDto?.toJson(),
-    "parkingSlotWithBookingDetailDto":
-    parkingSlotWithBookingDetailDto?.toJson(),
+    "parkingSlotWithBookingDetailDto": parkingSlotWithBookingDetailDto?.toJson(),
     "floorWithBookingDetailDto": floorWithBookingDetailDto?.toJson(),
-    "transactionWithBookingDetailDtos":
-    transactionWithBookingDetailDtos == null
-        ? []
-        : List<dynamic>.from(
-        transactionWithBookingDetailDtos!.map((x) => x.toJson())),
+    "transactionWithBookingDetailDtos": transactionWithBookingDetailDtos == null ? [] : List<dynamic>.from(transactionWithBookingDetailDtos!.map((x) => x.toJson())),
   };
 }
 
@@ -134,17 +107,10 @@ class BookingDetails {
 
   factory BookingDetails.fromJson(Map<String, dynamic> json) => BookingDetails(
     bookingId: json["bookingId"],
-    startTime: json["startTime"] == null
-        ? null
-        : DateTime.parse(json["startTime"]),
-    endTime:
-    json["endTime"] == null ? null : DateTime.parse(json["endTime"]),
-    checkinTime: json["checkinTime"] == null
-        ? null
-        : DateTime.parse(json["checkinTime"]),
-    checkoutTime: json["checkoutTime"] == null
-        ? null
-        : DateTime.parse(json["checkoutTime"]),
+    startTime: json["startTime"] == null ? null : DateTime.parse(json["startTime"]),
+    endTime: json["endTime"] == null ? null : DateTime.parse(json["endTime"]),
+    checkinTime: json["checkinTime"] == null ? null : DateTime.parse(json["checkinTime"]),
+    checkoutTime: json["checkoutTime"] == null ? null : DateTime.parse(json["checkoutTime"]),
     status: json["status"],
     guestName: json["guestName"],
     guestPhone: json["guestPhone"],
@@ -175,11 +141,10 @@ class FloorWithBookingDetailDto {
     this.floorName,
   });
 
-  factory FloorWithBookingDetailDto.fromJson(Map<String, dynamic> json) =>
-      FloorWithBookingDetailDto(
-        floorId: json["floorId"],
-        floorName: json["floorName"],
-      );
+  factory FloorWithBookingDetailDto.fromJson(Map<String, dynamic> json) => FloorWithBookingDetailDto(
+    floorId: json["floorId"],
+    floorName: json["floorName"],
+  );
 
   Map<String, dynamic> toJson() => {
     "floorId": floorId,
@@ -196,11 +161,10 @@ class ParkingSlotWithBookingDetailDto {
     this.name,
   });
 
-  factory ParkingSlotWithBookingDetailDto.fromJson(Map<String, dynamic> json) =>
-      ParkingSlotWithBookingDetailDto(
-        parkingSlotId: json["parkingSlotId"],
-        name: json["name"],
-      );
+  factory ParkingSlotWithBookingDetailDto.fromJson(Map<String, dynamic> json) => ParkingSlotWithBookingDetailDto(
+    parkingSlotId: json["parkingSlotId"],
+    name: json["name"],
+  );
 
   Map<String, dynamic> toJson() => {
     "parkingSlotId": parkingSlotId,
@@ -212,24 +176,31 @@ class ParkingWithBookingDetailDto {
   final int? parkingId;
   final String? name;
   final String? address;
+  final double? latitude;
+  final double? longitude;
 
   ParkingWithBookingDetailDto({
     this.parkingId,
     this.name,
     this.address,
+    this.latitude,
+    this.longitude,
   });
 
-  factory ParkingWithBookingDetailDto.fromJson(Map<String, dynamic> json) =>
-      ParkingWithBookingDetailDto(
-        parkingId: json["parkingId"],
-        name: json["name"],
-        address: json["address"],
-      );
+  factory ParkingWithBookingDetailDto.fromJson(Map<String, dynamic> json) => ParkingWithBookingDetailDto(
+    parkingId: json["parkingId"],
+    name: json["name"],
+    address: json["address"],
+    latitude: json["latitude"]?.toDouble(),
+    longitude: json["longitude"]?.toDouble(),
+  );
 
   Map<String, dynamic> toJson() => {
     "parkingId": parkingId,
     "name": name,
     "address": address,
+    "latitude": latitude,
+    "longitude": longitude,
   };
 }
 
@@ -246,13 +217,12 @@ class TransactionWithBookingDetailDto {
     this.paymentMethod,
   });
 
-  factory TransactionWithBookingDetailDto.fromJson(Map<String, dynamic> json) =>
-      TransactionWithBookingDetailDto(
-        transactionId: json["transactionId"],
-        price: json["price"]?.toDouble(),
-        status: json["status"],
-        paymentMethod: json["paymentMethod"],
-      );
+  factory TransactionWithBookingDetailDto.fromJson(Map<String, dynamic> json) => TransactionWithBookingDetailDto(
+    transactionId: json["transactionId"],
+    price: json["price"]?.toDouble(),
+    status: json["status"],
+    paymentMethod: json["paymentMethod"],
+  );
 
   Map<String, dynamic> toJson() => {
     "transactionId": transactionId,

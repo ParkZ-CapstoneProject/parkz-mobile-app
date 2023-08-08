@@ -11,9 +11,11 @@ import 'package:parkz/utils/input/input_widget.dart';
 import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 
+import 'component/parking_term.dart';
+
 class InformationIdentification extends StatefulWidget {
-  final EkycResponse userInfo;
-  const InformationIdentification({Key? key, required this.userInfo})
+  final EkycResponse? userInfo;
+  const InformationIdentification({Key? key,  this.userInfo})
       : super(key: key);
 
   @override
@@ -35,41 +37,45 @@ class _InformationIdentificationState extends State<InformationIdentification> {
 
   @override
   void initState() {
-    super.initState();
 
     // TODO: implement initState
-    final recognizedData = widget.userInfo.recognizedData;
-    if(AuthenticationPage.phone.isNotEmpty){
-      phoneController.text = AuthenticationPage.phone;
-    }
-    if (recognizedData != null) {
-      if (recognizedData.id != null) {
-        idCardController.text = recognizedData.id!;
-      }
-      if (recognizedData.birthday != null) {
-        dateOfBirthController.text = recognizedData.birthday!;
-      }
-      if (recognizedData.name != null) {
-        nameController.text = recognizedData.name!;
-      }
-      if (recognizedData.sex != null) {
-        genderController.text = recognizedData.sex!;
-      }
-      if (recognizedData.address != null) {
-        addressController.text = recognizedData.address!;
-      }
-      if (recognizedData.issueDate != null) {
-        idDate.text = recognizedData.issueDate!;
-      }
-      if (recognizedData.issueBy != null) {
-        idIssuedBy.text = recognizedData.issueBy!;
-      }
-    }
+    if(widget.userInfo != null){
+      final recognizedData = widget.userInfo?.recognizedData;
 
-    // Show snack bar
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showSnack(context, widget.userInfo.recognizedData?.warningCode);
-    });
+      if(AuthenticationPage.phone.isNotEmpty){
+        phoneController.text = AuthenticationPage.phone;
+      }
+      if (recognizedData != null) {
+        if (recognizedData.id != null) {
+          idCardController.text = recognizedData.id!;
+        }
+        if (recognizedData.birthday != null) {
+          dateOfBirthController.text = recognizedData.birthday!;
+        }
+        if (recognizedData.name != null) {
+          nameController.text = recognizedData.name!;
+        }
+        if (recognizedData.sex != null) {
+          genderController.text = recognizedData.sex!;
+        }
+        if (recognizedData.address != null) {
+          addressController.text = recognizedData.address!;
+        }
+        if (recognizedData.issueDate != null) {
+          idDate.text = recognizedData.issueDate!;
+        }
+        if (recognizedData.issueBy != null) {
+          idIssuedBy.text = recognizedData.issueBy!;
+        }
+      }
+
+      // Show snack bar
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSnack(context, widget.userInfo?.recognizedData?.warningCode);
+      });
+    }
+    super.initState();
+
   }
 
   @override
@@ -164,10 +170,23 @@ class _InformationIdentificationState extends State<InformationIdentification> {
                       });
                     },
                   ),
-                  const SemiBoldText(
-                      text: 'Tôi đồng ý với Điều khoản sử dụng',
-                      fontSize: 15,
-                      color: AppColor.forText)
+                   Row(
+                    children: [
+                      const SemiBoldText(
+                          text: 'Tôi đồng ý với ',
+                          fontSize: 14,
+                          color: AppColor.forText),
+                      InkWell(
+                        onTap: () {
+                           Navigator.push(context, MaterialPageRoute(builder: (context) => const ParkingTermsScreen()));
+                        },
+                        child: const SemiBoldText(
+                            text: ' Điều khoản sử dụng',
+                            fontSize: 15,
+                            color: Colors.blue),
+                      ),
+                    ],
+                  )
                 ],
               ),
             )

@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,6 +22,7 @@ import '../model/vehicles_response.dart';
 import '../parkingdetail/parking_detail_page.dart';
 import '../utils/loading/loading.dart';
 import 'booking_slot_page.dart';
+import 'component/parking_message.dart';
 
 class BookingDetail extends StatefulWidget {
   const BookingDetail({Key? key}) : super(key: key);
@@ -31,7 +33,7 @@ class BookingDetail extends StatefulWidget {
 
 class _BookingDetailState extends State<BookingDetail> {
   double containerPadding = 24;
-  int selectedPaymentType = 0; // 0: Thanh toán trước, 1: Thanh toán trả sau
+  int selectedPaymentType = 1; // 0: Thanh toán trước, 1: Thanh toán trả sau
   Vehicle? result;
   String? nameBook;
   String? phoneBook;
@@ -242,27 +244,71 @@ class _BookingDetailState extends State<BookingDetail> {
                       width: double.infinity,
                       child: MyButton(
                           text: 'Xác nhận giao dịch',
-                          function: () async {
+                          function: ()  {
+
                             if(result != null){
-                              int? bookingId = await createPostPayBooking(
-                                    BookingSlotPage.slotId,
-                                    BottomParkingBar.startDateTimeGlobal.toIso8601String(),
-                                    BottomParkingBar.endDateTimeGlobal.toIso8601String(),
-                                    DateFormat('yyyy-MM-dd').format(BottomParkingBar.startDayGlobal).toString(),
-                                    result!.vehicleInforId,
-                                    selectedPaymentType,
-                                    guessNameBook,
-                                    guessPhoneBook,
-                                    context
-                                );
-                              if(bookingId != null){
-                                debugPrint('BookingIDne: $bookingId');
-                                      await Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>  BookingPage(bookingId: bookingId,)),
-                                );
-                              }
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.info,
+                                animType: AnimType.bottomSlide,
+                                title: 'Thông tin đến bạn',
+                                body: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Center(child: SemiBoldText(text: 'Thông tin', fontSize: 15, color: AppColor.forText),),
+                                      const Divider(color: AppColor.navy, thickness: 1,),
+                                      const SizedBox(height: 16), // Add some spacing between text and the bottom
+                                      Text(
+                                        parkingServiceText.line1,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      const SizedBox(height: 8), // Add some spacing between text and the bottom
+                                      Text(
+                                        parkingServiceText.line2,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      const SizedBox(height: 8), // Add some spacing between text and the bottom
+
+                                      Text(
+                                        parkingServiceText.line3,
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: MyButton(text: 'Đặt chỗ', function: () async {
+                                          int? bookingId = await createPostPayBooking(
+                                              BookingSlotPage.slotId,
+                                              BottomParkingBar.startDateTimeGlobal.toIso8601String(),
+                                              BottomParkingBar.endDateTimeGlobal.toIso8601String(),
+                                              DateFormat('yyyy-MM-dd').format(BottomParkingBar.startDayGlobal).toString(),
+                                              result!.vehicleInforId,
+                                              selectedPaymentType,
+                                              guessNameBook,
+                                              guessPhoneBook,
+                                              context
+                                          );
+                                          if(bookingId != null){
+                                            debugPrint('BookingIDne: $bookingId');
+                                            await Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>  BookingPage(bookingId: bookingId,)),
+                                            );
+                                          }
+
+                                        }, textColor: Colors.white, backgroundColor: AppColor.navy),
+                                      )
+
+                                    ],
+                                  ),
+                                ),
+                              ).show();
+                            }else {
+                              Utils(context).showWarningSnackBar('Bạn phải chọn phương tiện');
                             }
                           },
                           textColor: Colors.white,
@@ -526,20 +572,6 @@ class _BookingDetailState extends State<BookingDetail> {
                           const SemiBoldText(text: 'Thanh toán', fontSize: 20, color: AppColor.forText),
                           ListTile(
                             contentPadding: const EdgeInsets.all(0),
-                            title: const MediumText(text: 'Thanh toán trả trước', fontSize: 15, color: AppColor.forText,),
-                            trailing: Radio<int>(
-                              activeColor: MaterialStateColor.resolveWith((states) => Colors.orange),
-                              value: 0,
-                              groupValue: selectedPaymentType,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedPaymentType = value!;
-                                });
-                              },
-                            ),
-                          ),
-                          ListTile(
-                            contentPadding: const EdgeInsets.all(0),
                             title: const MediumText(text: 'Thanh toán trả sau', fontSize: 15, color: AppColor.forText,),
                             trailing: Radio<int>(
                               activeColor: MaterialStateColor.resolveWith((states) => Colors.orange),
@@ -552,6 +584,22 @@ class _BookingDetailState extends State<BookingDetail> {
                               },
                             ),
                           ),
+
+                          ParkingDetailPage.parkingPrepay == true ?
+                          ListTile(
+                            contentPadding: const EdgeInsets.all(0),
+                            title: const MediumText(text: 'Thanh toán trả trước', fontSize: 15, color: AppColor.forText,),
+                            trailing: Radio<int>(
+                              activeColor: MaterialStateColor.resolveWith((states) => Colors.orange),
+                              value: 0,
+                              groupValue: selectedPaymentType,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedPaymentType = value!;
+                                });
+                              },
+                            ),
+                          ) : const SizedBox.shrink(),
                         ],
                       ),
                     );

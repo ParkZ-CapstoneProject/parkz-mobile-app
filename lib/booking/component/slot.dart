@@ -70,7 +70,6 @@ class _SlotState extends State<Slot> {
                                     fontSize: 15,
                                     color: AppColor.orange),
                                 SizedBox(height: 8,),
-
                               ],
                             ),
                         )

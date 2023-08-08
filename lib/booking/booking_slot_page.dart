@@ -136,7 +136,7 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
             backgroundColor: AppColor.navy),
       ),
       body: FutureBuilder<SlotsResponse>(
-          future: getSlotsParkingByFloor(selectedFloor.floorId, widget.startTime, widget.endTime),
+          future: getSlotsParkingByFloor(selectedFloor.floorId, widget.startTime.toIso8601String(), widget.endTime.toIso8601String()),
           builder: (context, snapshot) {
             if(snapshot.connectionState == ConnectionState.waiting){
               return const BookingSlotLoading();
@@ -148,7 +148,7 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
                 height: 310,
                 child: Center(
                   child: SemiBoldText(
-                      text: '[E]Không có slot trong bãi xe',
+                      text: 'Không có slot hợp lệ trong ngày giờ này',
                       fontSize: 19,
                       color: AppColor.forText),
                 ),
@@ -257,7 +257,7 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
                   height: 310,
                   child: Center(
                     child: SemiBoldText(
-                        text: 'Không có slot trong bãi',
+                        text: 'Không có slot trong bãi.',
                         fontSize: 19,
                         color: AppColor.forText),
                   ),
@@ -269,7 +269,7 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
               height: 310,
               child: Center(
                 child: SemiBoldText(
-                    text: '[E]Không có slot trong bãi xe',
+                    text: '[U]Không có slot trong bãi xe',
                     fontSize: 19,
                     color: AppColor.forText),
               ),

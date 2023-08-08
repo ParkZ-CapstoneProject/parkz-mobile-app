@@ -205,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                         ),
 
                         FutureBuilder<RatingHomeResponse>(
-                          future: getParkingListHome(),
+                          future: getParkingListHome(10),
                           builder: (context, snapshot) {
                             if(snapshot.connectionState == ConnectionState.waiting){
                               return const ParkinkCardHomeLoadingList();

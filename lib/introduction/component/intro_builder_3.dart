@@ -14,9 +14,9 @@ class IntroductionBuilder3 extends StatelessWidget {
     final imageHeight = screenHeight / 2.3;
 
     const String banner = 'assets/image/splash3.svg';
-    const String title = 'Title';
+    const String title = 'ParkZ';
     const String description =
-        'Lorem ipsum dolor sit amet consectetur. Et molestie arcu massa sagittis ac nam auctor ultricies.';
+        'Nền tảng kết nối giữa người dùng và bãi xe, dễ dàng đặt chỗ, kiếm chỗ tiết kiệm thời gian. \n Ra vào bãi bằng QR ra vào bãi dễ dàng và nhanh chóng ';
 
     return Container(
       decoration: const BoxDecoration(

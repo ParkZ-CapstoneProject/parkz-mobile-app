@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:intl/intl.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:parkz/activity/component/status_tag.dart';
 import 'package:parkz/booking/component/my_seperator.dart';
 import 'package:parkz/bottombar/bottombar_page.dart';
@@ -123,6 +124,11 @@ class _BookingPageState extends State<BookingPage> {
                                 text: 'Chỉ dường',
                                 function: () {
 
+                                  MapLauncher.showDirections(
+                                      mapType: MapType.google,
+                                      destination: Coords(booking.parkingWithBookingDetailDto!.latitude!, booking.parkingWithBookingDetailDto!.longitude!),
+                                      destinationTitle: booking.parkingWithBookingDetailDto!.name!,
+                                      originTitle: booking.parkingWithBookingDetailDto!.name!);
                                 },
                                 textColor: Colors.white,
                                 backgroundColor: AppColor.orange

@@ -159,7 +159,7 @@ class _OtpPageState extends State<OtpPage> with CodeAutoFill {
                                 await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const CardIdentificationPage()),);
                               }
                               else {
-                                await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyBottomBar(selectedInit: 0)),);
+                                await Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MyBottomBar(selectedInit: 0)),(route) => false,);
 
                               };
                             }catch(e){

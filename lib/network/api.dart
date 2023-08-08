@@ -173,10 +173,10 @@ Future<NearestParkingResponse> getNearestParking(
 }
 
 // Lấy danh sách bãi xe nổi bật
-Future<RatingHomeResponse> getParkingListHome() async {
+Future<RatingHomeResponse> getParkingListHome(int pageSize) async {
   try {
     final response = await http.get(
-      Uri.parse('$host/api/parkings-for-cus/ratings?PageNo=1&PageSize=10'),
+      Uri.parse('$host/api/parkings-for-cus/ratings?PageNo=1&PageSize=$pageSize'),
       headers: {'accept': 'application/json'},
     );
 
@@ -465,12 +465,12 @@ Future<CreateVehicleResponse?> createVehicle(licensePlate, vehicleName, color) a
         body: jsonEncode(requestBody)
       );
       if (response.statusCode == 201) {
-        print(' Thành công s');
+        debugPrint('Tạo mới phương tiện Thành công');
         final responseJson = jsonDecode(response.body);
         return CreateVehicleResponse.fromJson(responseJson);
       }
     }
-    print('Tạo mới thất bại');
+    debugPrint('Tạo mới phương tiện thất bại');
     return null;
   } catch (e) {
     throw Exception('Fail to create vehicle: $e');
@@ -499,12 +499,11 @@ Future<CreateVehicleResponse?> createVehicleGuest(licensePlate, vehicleName, col
           body: jsonEncode(requestBody)
       );
       if (response.statusCode == 201) {
-        print(' Thành công');
+        debugPrint(' Thành công');
         final responseJson = jsonDecode(response.body);
         return CreateVehicleResponse.fromJson(responseJson);
       }
     }
-    print('Bị khùm');
     return null;
   } catch (e) {
     throw Exception('Fail to create vehicle: $e');
@@ -520,8 +519,8 @@ Future<String?> depositWallet(int amount) async {
         "totalPrice": amount,
         "userId": userID,
       };
-      print('totalPrice $amount');
-      print('userId $userID');
+      debugPrint('totalPrice $amount');
+      debugPrint('userId $userID');
       final response = await http.post(
           Uri.parse('$host/api/wallet/deposit'),
           headers: {
@@ -731,7 +730,7 @@ Future<ProfileResponse?> getProfile(context) async {
         Uri.parse('$host/api/mobile/account/$userID'),
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'bearer $token',
+          'Authorization': 'bearer $token'
         },
       );
       if (response.statusCode >= 200 && response.statusCode <300) {
@@ -754,6 +753,43 @@ Future<ProfileResponse?> getProfile(context) async {
     throw Exception('Fail to profile info:: $e');
   }
 }
+
+//Đánh gia rating
+Future<bool> ratingBooking(int bookingId, int stars, int parkingId) async {
+  try {
+    Map<String, dynamic> requestBody = {
+      "bookingId": bookingId,
+      "parkingId": parkingId,
+      "stars": stars
+    };
+    String? token = await storage.read(key: 'token');
+
+    debugPrint('---Request rating Booking---');
+    debugPrint(jsonEncode(requestBody));
+
+    final response = await http.put(
+        Uri.parse('$host/api/rating-stars'),
+        headers: {
+          'accept': '*/*',
+          'Authorization': 'bearer $token',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(requestBody)
+    );
+    if(response.statusCode ==204){
+      return true;
+    }else {
+      if(response.statusCode >= 400 && response.statusCode <500){
+        throw Exception('Fail to rating booking: Status code ${response.statusCode} Message ${response.body}');
+      }else{
+        throw Exception('Fail to rating booking: Status code ${response.statusCode} Message ${response.body}');
+      }
+    }
+  } catch (e) {
+    throw Exception('Fail to Check out booking: $e');
+  }
+}
+
 
 
 

@@ -20,6 +20,7 @@ class ParkingDetailPage extends StatefulWidget {
   static String parkingAva ="";
   static String parkingName = "";
   static String parkingAddress = "";
+  static bool parkingPrepay = false;
 }
 
 class _ParkingDetailPageState extends State<ParkingDetailPage> {
@@ -70,6 +71,7 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
             ParkingDetailPage.parkingAva = imageUrls.first;
             ParkingDetailPage.parkingName = snapshot.data!.data!.parking!.name!;
             ParkingDetailPage.parkingAddress = snapshot.data!.data!.parking!.address!;
+            ParkingDetailPage.parkingPrepay = snapshot.data!.data!.parking!.isPrepayment!;
 
             ParkingHasPrice carPrice = ParkingHasPrice();
               ParkingHasPrice motoPrice = ParkingHasPrice();

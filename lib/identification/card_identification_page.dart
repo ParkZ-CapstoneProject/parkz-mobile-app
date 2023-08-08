@@ -14,6 +14,8 @@ import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
 
+import 'component/parking_term.dart';
+
 class CardIdentificationPage extends StatefulWidget {
   const CardIdentificationPage({Key? key}) : super(key: key);
 
@@ -55,7 +57,13 @@ class _CardIdentificationPageState extends State<CardIdentificationPage> {
         ),
         actions: [
           TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>  const InformationIdentification()),
+                );
+              },
               child: const SemiBoldText(
                   text: 'Bỏ qua', fontSize: 13, color: AppColor.forText))
         ],
@@ -83,6 +91,18 @@ class _CardIdentificationPageState extends State<CardIdentificationPage> {
               const BulletText(txt: 'Chụp trong môi trường đủ ánh sáng.'),
               const BulletText(txt: 'Ảnh không bị mất góc.'),
               const BulletText(txt: 'Căn chỉnh ảnh chụp đúng với khung hình.'),
+              const SizedBox(
+                height: 8,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const ParkingTermsScreen()));
+                },
+                child: const SemiBoldText(
+                    text: ' Điều khoản sử dụng',
+                    fontSize: 17,
+                    color: Colors.blue),
+              ),
               const SizedBox(
                 height: 24,
               ),

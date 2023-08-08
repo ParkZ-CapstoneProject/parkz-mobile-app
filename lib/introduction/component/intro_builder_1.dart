@@ -14,9 +14,9 @@ class IntroductionBuilder1 extends StatelessWidget {
     final imageHeight = screenHeight / 3;
 
     const String banner = 'assets/image/splash1.svg';
-    const String title = 'Title';
+    const String title = 'Khó khăn';
     const String description =
-        'Lorem ipsum dolor sit amet consectetur. Et molestie arcu massa sagittis ac nam auctor ultricies.';
+        'Bạn gặp khó khăn trong việc tìm kiếm  bãi đỗ xe ô tô gần nơi bạn muốn đến trong thành phố Hồ Chí Minh?';
 
     return Container(
       decoration: const BoxDecoration(
