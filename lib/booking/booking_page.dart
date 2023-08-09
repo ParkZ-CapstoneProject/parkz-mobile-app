@@ -9,6 +9,7 @@ import 'package:parkz/booking/component/my_seperator.dart';
 import 'package:parkz/bottombar/bottombar_page.dart';
 import 'package:parkz/utils/button/button_widget.dart';
 import 'package:parkz/utils/constanst.dart';
+import 'package:parkz/utils/loading/loading.dart';
 import 'package:parkz/utils/loading/loading_page.dart';
 import 'package:parkz/utils/text/medium.dart';
 import 'package:parkz/utils/text/regular.dart';
@@ -16,6 +17,7 @@ import 'package:parkz/utils/text/semi_bold.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../activity/component/rating_pop.dart';
 import '../model/booking_detail_response.dart';
 import '../network/api.dart';
 
@@ -85,7 +87,7 @@ class _BookingPageState extends State<BookingPage> {
                   title: const SemiBoldText(
                       text: 'Chi tiết đơn đặt', fontSize: 20, color: Colors.white),
                 ),
-                bottomNavigationBar: booking.bookingDetails!.status == 'Initial' || booking.bookingDetails!.status == 'Success' ?
+                bottomNavigationBar: booking.bookingDetails!.status == 'Initial' || booking.bookingDetails!.status == 'Success' || (booking.bookingDetails!.status == 'Done' && booking.bookingDetails!.isRating == false) ?
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
@@ -117,13 +119,39 @@ class _BookingPageState extends State<BookingPage> {
                       )
                       : const SizedBox(),
 
+                      booking.bookingDetails!.status == 'Done' && booking.bookingDetails!.isRating == false ?
+                      // Nut danh gia
                       Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                            child: MyButton(
+                                text: 'Đánh giá',
+                                function: () async {
+                                  bool isSuccess= await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>  RatingPop(bookingID: booking.bookingDetails!.bookingId!, parkingID: booking.parkingWithBookingDetailDto!.parkingId!,),
+                                  );
+                                  if (isSuccess == true){
+                                    _refreshData();
+                                    Utils(context).showSuccessSnackBar('Đánh giá thành công');
+                                  }else{
+                                    _refreshData();
+                                    Utils(context).showErrorSnackBar('Đánh giá thất bại');
+                                  }
+                                },
+                                textColor: Colors.white,
+                                backgroundColor: AppColor.orange
+                            ),
+                          )
+                      )
+
+                      // Nut chi duong
+                      :Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                             child: MyButton(
                                 text: 'Chỉ dường',
                                 function: () {
-
                                   MapLauncher.showDirections(
                                       mapType: MapType.google,
                                       destination: Coords(booking.parkingWithBookingDetailDto!.latitude!, booking.parkingWithBookingDetailDto!.longitude!),
@@ -141,7 +169,7 @@ class _BookingPageState extends State<BookingPage> {
 
                 body: Container(
                   padding:
-                   EdgeInsets.only(left: 24, right: 24, top: 75, bottom: booking.bookingDetails!.status == 'Success' || booking.bookingDetails!.status == 'Initial' ? 70 : 0),
+                   EdgeInsets.only(left: 24, right: 24, top: 75, bottom: booking.bookingDetails!.status == 'Success' || booking.bookingDetails!.status == 'Initial' || (booking.bookingDetails!.status == 'Done' && booking.bookingDetails!.isRating == false) ? 70 : 0),
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(colors: [
                       Color(0xFF064789),

@@ -19,9 +19,10 @@ class ActivityCard extends StatefulWidget {
   final String floorName;
   final String slotName;
   final String status;
+  final bool? isRating;
 
 
-  const ActivityCard({Key? key, required this.bookingId, required this.dateBook, required this.startTime, required this.endTime, required this.licensePlate, required this.address, required this.parkingName, required this.floorName, required this.slotName, required this.status}) : super(key: key);
+  const ActivityCard({Key? key, required this.bookingId, required this.dateBook, required this.startTime, required this.endTime, required this.licensePlate, required this.address, required this.parkingName, required this.floorName, required this.slotName, required this.status, this.isRating}) : super(key: key);
 
   @override
   State<ActivityCard> createState() => _ActivityCardState();
@@ -124,7 +125,7 @@ class _ActivityCardState extends State<ActivityCard> {
           Positioned(
             top: 12,
               right: 12,
-              child: StatusTag(status: widget.status,)
+              child: StatusTag(status: widget.status, isRating: widget.isRating,)
 
           )
         ],

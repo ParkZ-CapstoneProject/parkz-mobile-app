@@ -195,6 +195,7 @@ Future<RatingHomeResponse> getParkingListHome(int pageSize) async {
 // Lấy chi tiết bãi xe
 Future<ParkingDetailResponse> getParkingDetail(id) async {
   try {
+    debugPrint('-------------- Get Parking ID : $id ---------------');
     final response = await http.get(
       Uri.parse('$host/api/parkings/mobile/parking-details?ParkingId=$id'),
       headers: {'accept': 'application/json'},
@@ -776,20 +777,39 @@ Future<bool> ratingBooking(int bookingId, int stars, int parkingId) async {
         },
         body: jsonEncode(requestBody)
     );
-    if(response.statusCode ==204){
+    if(response.statusCode >= 200 && response.statusCode <300){
       return true;
     }else {
-      if(response.statusCode >= 400 && response.statusCode <500){
-        throw Exception('Fail to rating booking: Status code ${response.statusCode} Message ${response.body}');
-      }else{
-        throw Exception('Fail to rating booking: Status code ${response.statusCode} Message ${response.body}');
-      }
+      return false;
     }
   } catch (e) {
-    throw Exception('Fail to Check out booking: $e');
+    throw Exception('Fail to rating booking: $e');
   }
 }
 
+// Xóa xe
+Future<bool> deleteVehicle(int id) async {
+  try {
+    String? token = await storage.read(key: 'token');
+
+    debugPrint('---Request delete vehicle : $id---');
+
+    final response = await http.delete(
+        Uri.parse('$host/api/vehicle-infor/$id'),
+        headers: {
+          'accept': '*/*',
+          'Authorization': 'bearer $token',
+        },
+    );
+    if(response.statusCode >= 200 && response.statusCode <300){
+      return true;
+    }else {
+      return false;
+    }
+  } catch (e) {
+    throw Exception('Fail to rating booking: $e');
+  }
+}
 
 
 

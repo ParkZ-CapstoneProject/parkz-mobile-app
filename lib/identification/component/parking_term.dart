@@ -9,7 +9,7 @@ class ParkingTermsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: const Text('Điều khoản và Chính sách '),
       ),
       body: const Padding(

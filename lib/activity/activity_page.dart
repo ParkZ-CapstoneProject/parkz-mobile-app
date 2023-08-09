@@ -132,6 +132,7 @@ class _ActivityPageState extends State<ActivityPage>
                                 return  Padding(
                                   padding: const EdgeInsets.only(top: 16.0),
                                   child: ActivityCard(
+                                    isRating: snapshot.data!.data![index].bookingSearchResult!.isRating,
                                       bookingId:  snapshot.data!.data![index].bookingSearchResult!.bookingId!,
                                       dateBook: snapshot.data!.data![index].bookingSearchResult!.dateBook!,
                                       startTime: snapshot.data!.data![index].bookingSearchResult!.startTime!,

@@ -74,6 +74,7 @@ class BookingSearchResult {
   final DateTime? endTime;
   final DateTime? dateBook;
   final String? status;
+  final bool? isRating;
 
   BookingSearchResult({
     this.bookingId,
@@ -81,6 +82,7 @@ class BookingSearchResult {
     this.endTime,
     this.dateBook,
     this.status,
+    this.isRating,
   });
 
   factory BookingSearchResult.fromJson(Map<String, dynamic> json) => BookingSearchResult(
@@ -89,6 +91,7 @@ class BookingSearchResult {
     endTime: json["endTime"] == null ? null : DateTime.parse(json["endTime"]),
     dateBook: json["dateBook"] == null ? null : DateTime.parse(json["dateBook"]),
     status: json["status"],
+    isRating: json["isRating"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -97,6 +100,7 @@ class BookingSearchResult {
     "endTime": endTime?.toIso8601String(),
     "dateBook": dateBook?.toIso8601String(),
     "status": status,
+    "isRating": isRating,
   };
 }
 

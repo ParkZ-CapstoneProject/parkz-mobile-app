@@ -36,6 +36,10 @@ class _VehiclePageState extends State<VehiclePage> {
     }
   }
 
+  Future<void> _refreshData() async {
+    setState(() {});
+  }
+
   void _showFullScreenDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -136,72 +140,85 @@ class _VehiclePageState extends State<VehiclePage> {
               fontSize: 20,
               color: AppColor.forText),
         ),
-        body: FutureBuilder<VehicleListResponse>(
-            future: getVehicleList(int.parse(userID!)),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const ParkinkCardHomeLoadingList();
-              }
-              if (snapshot.hasData &&
-                  snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.data!.data!.isNotEmpty) {
-                  return ListView.separated(
-                    separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8,),
-                    itemBuilder: (context, index) {
-                      return widget.isSelected == true ? InkWell(
-                        onTap:  () {
-                          Navigator.pop(context,snapshot.data!.data![index]);
-                        },
+        body: RefreshIndicator(
+          onRefresh: _refreshData,
+          child: FutureBuilder<VehicleListResponse>(
+              future: getVehicleList(int.parse(userID!)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const ParkinkCardHomeLoadingList();
+                }
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.data!.data!.isNotEmpty) {
+                    return ListView.separated(
+                      separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8,),
+                      padding: const EdgeInsets.only(top: 8),
+                      itemBuilder: (context, index) {
+                        return Dismissible(
+                          key: Key(snapshot.data!.data![index].vehicleInforId.toString()), // Unique key for each item
+                          onDismissed: (direction)  {
+                           deleteVehicle(snapshot.data!.data![index].vehicleInforId!);
+                          },
+                          background: Container(
+                            color: Colors.red,
+                            child: const Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
                           child: VehicleCard(
-                              vehicleName:
-                                  snapshot.data!.data![index].vehicleName!,
-                              licensePlate:
-                                  snapshot.data!.data![index].licensePlate!,
-                              color: snapshot.data!.data![index].color!)) : VehicleCard(
-                          vehicleName:
-                          snapshot.data!.data![index].vehicleName!,
-                          licensePlate:
-                          snapshot.data!.data![index].licensePlate!,
-                          color: snapshot.data!.data![index].color!);
-                    },
-                    itemCount: snapshot.data!.data!.length,
-                  );
-                } else {
+                            vehicleName: snapshot.data!.data![index].vehicleName!,
+                            licensePlate: snapshot.data!.data![index].licensePlate!,
+                            color: snapshot.data!.data![index].color!,
+                          ),
+                        );
+                      },
+                      itemCount: snapshot.data!.data!.length,
+                    );
+                  } else {
+                    return const SizedBox(
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: Center(
+                        child: SemiBoldText(
+                            text: 'Không phương tiện',
+                            fontSize: 19,
+                            color: AppColor.forText),
+                      ),
+                    );
+                  }
+                }
+                if (snapshot.hasError) {
                   return const SizedBox(
                     width: double.infinity,
-                    height: double.infinity,
+                    height: 510,
                     child: Center(
                       child: SemiBoldText(
-                          text: 'Không phương tiện',
+                          text: 'Lỗi không xác định',
                           fontSize: 19,
                           color: AppColor.forText),
                     ),
                   );
                 }
-              }
-              if (snapshot.hasError) {
                 return const SizedBox(
                   width: double.infinity,
                   height: 510,
                   child: Center(
                     child: SemiBoldText(
-                        text: 'Lỗi không xác định',
+                        text: '[U]Không có bãi xe gần bạn',
                         fontSize: 19,
                         color: AppColor.forText),
                   ),
                 );
-              }
-              return const SizedBox(
-                width: double.infinity,
-                height: 510,
-                child: Center(
-                  child: SemiBoldText(
-                      text: '[U]Không có bãi xe gần bạn',
-                      fontSize: 19,
-                      color: AppColor.forText),
-                ),
-              );
-            }),
+              }),
+        ),
       );
     }
     return const LoadingPage();

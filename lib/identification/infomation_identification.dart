@@ -222,11 +222,12 @@ class _InformationIdentificationState extends State<InformationIdentification> {
       Utils(context).stopLoading();
       if (response.data != null){
         Utils(context).showSuccessSnackBar('Đăng ký thành công');
-        await Navigator.push(
+        await Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
               builder: (context) =>
               const MyBottomBar(selectedInit: 0)),
+          (route) => false,
         );
       }else{
         Utils(context).showErrorSnackBar('Đăng ký thất bại');

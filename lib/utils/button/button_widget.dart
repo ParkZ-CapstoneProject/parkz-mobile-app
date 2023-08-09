@@ -8,19 +8,24 @@ class MyButton extends StatelessWidget {
   final Color backgroundColor;
   final double? minWidth;
   final double? minHeight;
+  final double? borderRadius;
 
-  const MyButton({Key? key, required this.text, required this.function, required this.textColor, required this.backgroundColor, this.minWidth, this.minHeight}) : super(key: key);
+  const MyButton({Key? key, required this.text, required this.function, required this.textColor, required this.backgroundColor, this.minWidth, this.minHeight, this.borderRadius}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     double? width = 150.0;
     double? height = 42.0;
+    late double? radius = 50;
     if(minWidth != null){
       width = minWidth;
     }
     if(minHeight != null ){
       height = minHeight;
+    }
+    if(borderRadius != null){
+      radius = borderRadius;
     }
 
     return ElevatedButton(
@@ -30,7 +35,7 @@ class MyButton extends StatelessWidget {
         backgroundColor: backgroundColor,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50.0),
+          borderRadius: BorderRadius.circular(radius!),
         ),
         minimumSize: Size(width!, height!),
       ),

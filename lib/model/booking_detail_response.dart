@@ -91,6 +91,7 @@ class BookingDetails {
   final String? guestPhone;
   final double? totalPrice;
   final String? qrImage;
+  final bool? isRating;
 
   BookingDetails({
     this.bookingId,
@@ -103,6 +104,7 @@ class BookingDetails {
     this.guestPhone,
     this.totalPrice,
     this.qrImage,
+    this.isRating,
   });
 
   factory BookingDetails.fromJson(Map<String, dynamic> json) => BookingDetails(
@@ -116,6 +118,7 @@ class BookingDetails {
     guestPhone: json["guestPhone"],
     totalPrice: json["totalPrice"]?.toDouble(),
     qrImage: json["qrImage"],
+    isRating: json["isRating"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -129,6 +132,7 @@ class BookingDetails {
     "guestPhone": guestPhone,
     "totalPrice": totalPrice,
     "qrImage": qrImage,
+    "isRating": isRating,
   };
 }
 

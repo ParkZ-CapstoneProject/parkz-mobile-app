@@ -4,7 +4,8 @@ import 'package:parkz/utils/text/regular.dart';
 
 class StatusTag extends StatelessWidget {
   final String status;
-  const StatusTag({Key? key, required this.status}) : super(key: key);
+  final bool? isRating;
+  const StatusTag({Key? key, required this.status, this.isRating}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,7 @@ class StatusTag extends StatelessWidget {
               : status == "Check_In" ? "Chờ ra bãi"
               : status == "Check_Out" ? "Chờ thanh toán"
               : status == "OverTime" ? "Quá giờ"
+              :  (status == "Done" && isRating == false) ? "Đánh giá"
               :  status == "Done" ? "Hoàn thành"
               : "Hủy đơn",
           color: status == "Initial" ? AppColor.orange

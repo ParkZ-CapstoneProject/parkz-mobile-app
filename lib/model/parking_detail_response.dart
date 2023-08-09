@@ -62,8 +62,8 @@ class Parking {
   final String? address;
   final String? description;
   final double? stars;
-  final double? totalStars;
-  final double? starsCount;
+  final dynamic totalStars;
+  final int? starsCount;
   final int? motoSpot;
   final int? carSpot;
   final bool? isFull;
