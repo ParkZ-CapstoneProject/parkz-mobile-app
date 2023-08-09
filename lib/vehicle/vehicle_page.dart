@@ -173,10 +173,15 @@ class _VehiclePageState extends State<VehiclePage> {
                               ),
                             ),
                           ),
-                          child: VehicleCard(
-                            vehicleName: snapshot.data!.data![index].vehicleName!,
-                            licensePlate: snapshot.data!.data![index].licensePlate!,
-                            color: snapshot.data!.data![index].color!,
+                          child: InkWell(
+                            onTap:  widget.isSelected == true ? () {
+                              Navigator.pop(context,snapshot.data!.data![index]);
+                            } : null,
+                            child: VehicleCard(
+                              vehicleName: snapshot.data!.data![index].vehicleName!,
+                              licensePlate: snapshot.data!.data![index].licensePlate!,
+                              color: snapshot.data!.data![index].color!,
+                            ),
                           ),
                         );
                       },
