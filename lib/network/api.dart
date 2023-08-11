@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:parkz/utils/loading/loading.dart';
 
 import '../model/balanceResponse.dart';
+import '../model/base_response.dart';
 import '../model/booking_detail_response.dart';
 import '../model/booking_response.dart';
 import '../model/createVehicleRespnse.dart';
@@ -26,6 +27,7 @@ import '../model/slots_response.dart';
 import '../model/transaction_response.dart';
 import '../model/upcoming_response.dart';
 import '../model/vehicles_response.dart';
+import '../model/violation_count_response.dart';
 import '../model/wallet_deposit_response.dart';
 
 
@@ -40,7 +42,7 @@ Future ekycRegister(frontID, backID) async {
   String username = 'sst-tester';
   String password = 'be0b966de533';
   String basicAuth =
-      'Basic ' + base64.encode(utf8.encode('$username:$password'));
+      'Basic ${base64.encode(utf8.encode('$username:$password'))}';
   EkycResponse error = EkycResponse(
       documentType: '',
       id: '',
@@ -117,7 +119,7 @@ Future<Register> authentication(phone, name, dateOfBirth, idCardDate, gender,
 
 Future<LoginResponse> login(phone) async {
   try{
-    print('Phone ne: $phone');
+    debugPrint('--------- Login with: $phone ---------');
     var response = await http.post(
         Uri.parse('$host/api/mobile/customer-authentication/login'),
         headers: {
@@ -334,7 +336,7 @@ Future<ExpectedPriceResponse> getExpectedPrice(parkingID, startDateTime, duratio
 Future<VehicleListResponse> getVehicleList(userId) async {
   try {
     String? token = await storage.read(key: 'token');
-    print('user id me: $userId');
+    debugPrint('-------- Get vehicle list with user id: $userId ------------');
     final response = await http.get(
       Uri.parse('$host/user/$userId/vehicle-infor?pageSize=100'),
         headers: {
@@ -372,10 +374,9 @@ Future <void> updateDeviceToken() async {
           })
       );
       if( response.statusCode == 204){
-        print('UpdatedDeviceToken');
+        debugPrint('--------- UpdatedDeviceToken ------------');
       }
     }
-
   } catch (e){
     throw Exception('Fail to update device token: $e');
   }
@@ -520,6 +521,7 @@ Future<String?> depositWallet(int amount) async {
         "totalPrice": amount,
         "userId": userID,
       };
+      debugPrint('----Call API deposit wallet----');
       debugPrint('totalPrice $amount');
       debugPrint('userId $userID');
       final response = await http.post(
@@ -808,6 +810,40 @@ Future<bool> deleteVehicle(int id) async {
     }
   } catch (e) {
     throw Exception('Fail to rating booking: $e');
+  }
+}
+
+// Lấy  Ban count
+Future<int?> getNumberOfViolations(context) async {
+  try {
+    String? userID = await storage.read(key: 'userID');
+    String? token = await storage.read(key: 'token');
+    if(userID != null && token != null){
+      final response = await http.get(
+        Uri.parse('$host/api/mobile/account/ban-count/$userID'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'bearer $token'
+        },
+      );
+      if (response.statusCode >= 200 && response.statusCode <300) {
+        final responseJson = jsonDecode(response.body);
+        return ViolationCountResponse.fromJson(responseJson).data!.banCount!;
+      } else {
+        if(response.statusCode >= 400 && response.statusCode <500){
+          final responseJson = jsonDecode(response.body);
+          BaseResponse baseResponse = BaseResponse.fromJson(responseJson);
+          Utils(context).showWarningSnackBar('${baseResponse.message}');
+          return null;
+        }else{
+          throw Exception('Fail to get number of Violations: Status code ${response.statusCode} Message ${response.body}');
+        }
+      }
+    }
+    Utils(context).showWarningSnackBar('Bạn cần đăng nhập');
+    return null;
+  } catch (e) {
+    throw Exception('Fail to get number of Violations: $e');
   }
 }
 
