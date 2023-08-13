@@ -63,6 +63,7 @@ class _BookingPageState extends State<BookingPage> {
           }
           if(snapshot.hasData && snapshot.connectionState == ConnectionState.done){
             DetailBooking booking = snapshot.data!.data!;
+
               return Scaffold(
                 extendBodyBehindAppBar: true,
                 extendBody: true,

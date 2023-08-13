@@ -43,6 +43,8 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
     super.dispose();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     double containerPadding = 24;
@@ -62,7 +64,7 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
         }
         if(snapshot.hasData && snapshot.connectionState == ConnectionState.done){
           //add image to list
-            if( snapshot.data!.data?.parking?.parkingSpotImages != null){
+            if( snapshot.data!.data?.parking?.parkingSpotImages != null && imageUrls.isEmpty){
             for (var parkingSpot in snapshot.data!.data!.parking!.parkingSpotImages!) {
               imageUrls.add(parkingSpot.imgPath!);
             }
@@ -96,7 +98,8 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ParkingImage(imageUrls: imageUrls),
+
+                  imageUrls.isNotEmpty ? ParkingImage(imageUrls: imageUrls) : SizedBox(height: MediaQuery.of(context).size.height / 4, width: double.infinity),
 
                   const SizedBox(height: 8,),
                   //Parking Info
@@ -121,7 +124,7 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
                             const SizedBox(width: 5,),
 
                             RegularText(
-                                text: snapshot.data!.data!.parking!.stars!.toString(),
+                                text: snapshot.data!.data!.parking!.stars.toString(),
                                 fontSize: 15,
                                 color: AppColor.forText),
                           ],
@@ -132,14 +135,14 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
 
                         //Parking Name
                         SemiBoldText(
-                            text: snapshot.data!.data!.parking!.name!,
+                            text: snapshot.data!.data!.parking!.name.toString(),
                             fontSize: 24,
                             color: AppColor.forText),
                         const SizedBox(height: 8),
 
                         //Address
                         MediumText(
-                            text: snapshot.data!.data!.parking!.address!,
+                            text: snapshot.data!.data!.parking!.address.toString(),
                             fontSize: 14,
                             color: AppColor.forText,
                             maxLine: 5),
@@ -183,7 +186,7 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
 
                         const SizedBox(height: 5,),
 
-                        Text(snapshot.data!.data!.parking!.description!),
+                        Text(snapshot.data!.data!.parking!.description.toString()),
                       ],
                     ),
                   ) : const SizedBox(),
@@ -245,6 +248,14 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
 
 Widget createTable(ParkingHasPrice price) {
 
+  String moneyFormat(double number) {
+    String formattedNumber = number.toStringAsFixed(0); // Convert double to string and remove decimal places
+    return formattedNumber.replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]} ',
+    );
+  }
+
   List<TableRow> rows = [];
   rows.add( TableRow(
     children: [
@@ -265,7 +276,7 @@ Widget createTable(ParkingHasPrice price) {
       ),
       TableCell(
         child: MediumText(
-            text: 'Phụ phí (${1}h sau)',
+            text: 'Phụ phí (Mỗi ${price.parkingPrice?.extraTimeStep}h)',
             fontSize: 14,
             color: AppColor.forText),
       ),
@@ -273,20 +284,23 @@ Widget createTable(ParkingHasPrice price) {
   ));
 
   for (int i = 0; i < price.parkingPrice!.timeLines!.length ; ++i) {
+    String? timeString = price.parkingPrice?.timeLines?[i].startTime;
+    String? timeStringEnd = price.parkingPrice?.timeLines?[i].endTime;
+
     rows.add(
       TableRow(
         children: [
           TableCell(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text('${price.parkingPrice?.timeLines?[i].startTime} -${price.parkingPrice?.timeLines?[i].endTime}'),
+              child: Text('${timeString?.substring(0, timeString.lastIndexOf(':'))} -${timeStringEnd?.substring(0, timeStringEnd.lastIndexOf(':'))}'),
             ),
           ),
           TableCell(
-            child: Text('${price.parkingPrice?.timeLines?[i].price}đ'),
+            child: Text('${moneyFormat(price.parkingPrice!.timeLines![i].price!)}đ'),
           ),
           TableCell(
-            child: Text('${price.parkingPrice?.timeLines?[i].extraFee}đ'),
+            child: Text('${moneyFormat(price.parkingPrice!.timeLines![i].extraFee!)}đ'),
           ),
         ],
       ),

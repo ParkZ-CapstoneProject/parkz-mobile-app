@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:parkz/splash_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:parkz/utils/button/countdown_button_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'network/api.dart';
 
@@ -41,7 +43,15 @@ Future<void> main() async {
     sound: true,
   );
 
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+  // initializeDateFormatting().then((_) => runApp(const MyApp()));
+  initializeDateFormatting().then((_) {
+    runApp(
+      ChangeNotifierProvider(
+        create: (context) => CountdownButtonProvider(),
+        child: const MyApp(),
+      ),
+    );
+  },);
 }
 
 class MyApp extends StatefulWidget {

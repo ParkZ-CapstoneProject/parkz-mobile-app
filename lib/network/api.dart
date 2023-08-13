@@ -13,7 +13,6 @@ import 'package:http/http.dart' as http;
 import 'package:parkz/utils/loading/loading.dart';
 
 import '../model/balanceResponse.dart';
-import '../model/base_response.dart';
 import '../model/booking_detail_response.dart';
 import '../model/booking_response.dart';
 import '../model/createVehicleRespnse.dart';
@@ -219,9 +218,9 @@ Future<List<LocationSuggestion>> fetchSuggestions(String query) async {
   try{
     if(query.trim() != '' ){
       final response = await http.get(Uri.parse(
-          'https://nominatim.openstreetmap.org/search?q=${query.trim()},Ho%20Chi%20Minh%20City&format=json&countrycodes=VN'));
+          'https://nominatim.openstreetmap.org/search?q=${query.trim()},Ho%20Chi%20Minh&format=json&countrycodes=VN'));
       if (response.statusCode == 200) {
-        final List<dynamic> responseJson = jsonDecode(response.body);
+        final List<dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
         return responseJson
             .map((json) => LocationSuggestion.fromJson(json))
             .toList();
@@ -317,6 +316,11 @@ Future<SlotsResponse> getSlotsParkingByFloor(id, startDateTime, endDateTime) asy
 // Lấy giá tạm tính cho khách hàng tại trang xác nhận thanh toán
 Future<ExpectedPriceResponse> getExpectedPrice(parkingID, startDateTime, duration) async {
   try {
+    debugPrint('---------Get expected price-------- ');
+    debugPrint('Parking ID : $parkingID');
+    debugPrint('Start Time : $startDateTime');
+    debugPrint('Duration: $duration');
+
     final response = await http.get(
       Uri.parse('$host/api/customer-booking/get-expected-price?ParkingId=$parkingID&StartimeBooking=$startDateTime&DesiredHour=$duration'),
     );
@@ -324,8 +328,7 @@ Future<ExpectedPriceResponse> getExpectedPrice(parkingID, startDateTime, duratio
       final responseJson = jsonDecode(response.body);
       return ExpectedPriceResponse.fromJson(responseJson);
     } else {
-      throw Exception(
-          'Failed to fetch expected price. Status code: ${response.statusCode}');
+      throw Exception('Failed to fetch expected price. Status code: ${response.statusCode}');
     }
   } catch (e) {
     throw Exception('Fail to get  expected price: $e');
@@ -814,11 +817,14 @@ Future<bool> deleteVehicle(int id) async {
 }
 
 // Lấy  Ban count
-Future<int?> getNumberOfViolations(context) async {
+Future<int> getNumberOfViolations() async {
   try {
     String? userID = await storage.read(key: 'userID');
     String? token = await storage.read(key: 'token');
     if(userID != null && token != null){
+      debugPrint('--------Call ban count -------');
+      debugPrint('User ID: $userID');
+      debugPrint('User Token $token');
       final response = await http.get(
         Uri.parse('$host/api/mobile/account/ban-count/$userID'),
         headers: {
@@ -831,17 +837,13 @@ Future<int?> getNumberOfViolations(context) async {
         return ViolationCountResponse.fromJson(responseJson).data!.banCount!;
       } else {
         if(response.statusCode >= 400 && response.statusCode <500){
-          final responseJson = jsonDecode(response.body);
-          BaseResponse baseResponse = BaseResponse.fromJson(responseJson);
-          Utils(context).showWarningSnackBar('${baseResponse.message}');
-          return null;
+          return 0;
         }else{
           throw Exception('Fail to get number of Violations: Status code ${response.statusCode} Message ${response.body}');
         }
       }
     }
-    Utils(context).showWarningSnackBar('Bạn cần đăng nhập');
-    return null;
+    return 0;
   } catch (e) {
     throw Exception('Fail to get number of Violations: $e');
   }

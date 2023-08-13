@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:parkz/authentication/authentication_page.dart';
 import 'package:parkz/bottombar/bottombar_page.dart';
 import 'package:parkz/home/components/nearby_card.dart';
 import 'package:parkz/home/components/nearby_shim_list.dart';
@@ -38,6 +40,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getAddress();
     getLatLong();
+    checkBan();
   }
   void getAddress() async {
     String? storedAddress = await PreferenceManager.getAddress();
@@ -53,6 +56,41 @@ class _HomePageState extends State<HomePage> {
       lat = storeLat;
       long = storeLong;
     });
+  }
+
+  void checkBan() async {
+    int banCount = await getNumberOfViolations();
+    if(banCount == 1){
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.warning,
+        animType: AnimType.bottomSlide,
+        title: 'Thông báo',
+        desc: 'Chúng tôi xin thông báo rằng nếu bạn tiếp tục không đến bãi xe theo lịch đặt, chúng tôi sẽ phải ngưng sử dụng dịch vụ của bạn để duy trì công bằng và đảm bảo tính sẵn sàng cho tất cả người dùng.',
+        btnOkOnPress: () {
+        },
+      ).show();
+    }
+    if(banCount > 1){
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.bottomSlide,
+        title: 'Thông báo',
+        desc: 'Chúng tôi tiếc báo rằng dịch vụ của bạn đã bị tạm ngưng do không tuân thủ lịch đặt tại bãi xe. Để tiếp tục sử dụng dịch vụ, vui lòng liên hệ với chúng tôi để biết thêm chi tiết và hướng dẫn khắc phục. Chúng tôi rất mong nhận được sự hợp tác của bạn trong việc duy trì trật tự và công bằng cho cộng đồng người dùng của chúng tôi.',
+        btnOkOnPress: () {
+          storage.delete(key: 'token');
+          storage.delete(key: 'userID');
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const AuthenticationPage() ), (route) => false,);
+        },
+        onDismissCallback: (type) {
+          storage.delete(key: 'token');
+          storage.delete(key: 'userID');
+        },
+      ).show();
+    }
+
+
   }
 
   Future<void> _refreshData() async {

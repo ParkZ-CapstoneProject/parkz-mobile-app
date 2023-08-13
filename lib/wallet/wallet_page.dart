@@ -32,7 +32,7 @@ class _WalletPageState extends State<WalletPage> {
 
   showVnPay(amountMoney, context) async {
     String? vnPayLink = await depositWallet(amountMoney);
-    debugPrint('Link VN PAy $vnPayLink');
+    debugPrint('Link VN Pay $vnPayLink');
     if(vnPayLink != null){
       bool isSucceed = await Navigator.push(
         context,
@@ -254,9 +254,12 @@ class _WalletPageState extends State<WalletPage> {
                                     return  ListTile(
                                       isThreeLine: true,
                                       contentPadding: EdgeInsets.zero,
-                                      leading: listTransation[index].status == 'Nap_tien_vao_vi_thanh_cong' ? const Icon(Icons.monetization_on, color: AppColor.navy, size: 30) : const Icon(Icons.monetization_on, color: AppColor.orange, size: 30) ,
+                                      leading: listTransation[index].status == 'Nap_tien_vao_vi_thanh_cong' || listTransation[index].description == 'Hoàn tiền'
+                                          ? const Icon(Icons.monetization_on, color: AppColor.navy, size: 30)
+                                          : const Icon(Icons.monetization_on, color: AppColor.orange, size: 30) ,
+
                                       title:  SemiBoldText(text: listTransation[index].description == null ? 'Thanh toán đơn' : listTransation[index].description!, fontSize: 17, color: AppColor.forText),
-                                      trailing: SemiBoldText(text: listTransation[index].status == 'Nap_tien_vao_vi_thanh_cong' ? '+ ${moneyFormat(listTransation[index].price!)} đ' : ' - ${moneyFormat(listTransation[index].price!)} đ' , fontSize: 15, color: AppColor.forText),
+                                      trailing: SemiBoldText(text: listTransation[index].status == 'Nap_tien_vao_vi_thanh_cong' || listTransation[index].description == 'Hoàn tiền' ? '+ ${moneyFormat(listTransation[index].price!)} đ' : ' - ${moneyFormat(listTransation[index].price!)} đ' , fontSize: 15, color: AppColor.forText),
                                       subtitle: MediumText(text: DateFormat('HH:mm - dd/MM/yyyy').format(listTransation[index].createdDate!).toString(), fontSize: 14, color: AppColor.navy),
                                     );
                                   },

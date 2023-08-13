@@ -22,7 +22,7 @@ class StatusTag extends StatelessWidget {
               : status == "Check_In" ? "Chờ ra bãi"
               : status == "Check_Out" ? "Chờ thanh toán"
               : status == "OverTime" ? "Quá giờ"
-              :  (status == "Done" && isRating == false) ? "Đánh giá"
+              :  (status == "Done" && isRating == false) ? "Chưa đánh giá"
               :  status == "Done" ? "Hoàn thành"
               : "Hủy đơn",
           color: status == "Initial" ? AppColor.orange

@@ -184,7 +184,7 @@ class _BookingDetailState extends State<BookingDetail> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<ExpectedPriceResponse>(
-      future: getExpectedPrice(ParkingDetailPage.parkingIdGlobal, BottomParkingBar.startDateTimeGlobal, BottomParkingBar.durationGlobal),
+      future: getExpectedPrice(ParkingDetailPage.parkingIdGlobal, BottomParkingBar.startDateTimeGlobal.toIso8601String(), BottomParkingBar.durationGlobal),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting){
           return const LoadingPage();
