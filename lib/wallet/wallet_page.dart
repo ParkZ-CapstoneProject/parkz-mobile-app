@@ -245,7 +245,7 @@ class _WalletPageState extends State<WalletPage> {
                             if(snapshot.hasData && snapshot.connectionState == ConnectionState.done){
                             if(snapshot.data!.data!.isNotEmpty){
 
-                              List<Transaction> listTransation = snapshot.data!.data!.reversed.toList();
+                              List<Transaction> listTransation = snapshot.data!.data!;
 
                               return ListView.separated(
                                   physics: const NeverScrollableScrollPhysics(),

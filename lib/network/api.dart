@@ -608,6 +608,9 @@ Future<UpcomingResponse?> getBookingHistory(context) async {
   try {
     String? userID = await storage.read(key: 'userID');
     String? token = await storage.read(key: 'token');
+    debugPrint('--------- Get booking history list ---------');
+    debugPrint('User ID: $userID');
+    debugPrint('Tokken: $token');
     if(userID != null && token != null){
       final response = await http.get(
         Uri.parse('$host/api/customer-booking/activities/$userID'),
@@ -620,12 +623,12 @@ Future<UpcomingResponse?> getBookingHistory(context) async {
         final responseJson = jsonDecode(response.body);
         return UpcomingResponse.fromJson(responseJson);
       } else {
-        throw Exception('Fail to get upcoming booking.: Status code ${response.statusCode} Message ${response.body}');
+        throw Exception('Fail to get history booking.: Status code ${response.statusCode} Message ${response.body}');
       }
     }
     return null;
   } catch (e) {
-    throw Exception('Fail to get upcoming booking: $e');
+    throw Exception('Fail to get history booking: $e');
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkz/utils/constanst.dart';
-import 'package:parkz/utils/text/regular.dart';
+import '../../utils/text/medium.dart';
 
 class StatusTag extends StatelessWidget {
   final String status;
@@ -15,7 +15,7 @@ class StatusTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
         color: status == "OverTime" ? AppColor.paleOrange : AppColor.navyPale,
       ),
-      child:  RegularText(
+      child:  MediumText(
           fontSize: 13,
           text: status == "Initial" ? 'Chờ xác nhận'
               : status == "Success" ? 'Chờ vào bãi'
@@ -26,7 +26,7 @@ class StatusTag extends StatelessWidget {
               :  status == "Done" ? "Hoàn thành"
               : "Hủy đơn",
           color: status == "Initial" ? AppColor.orange
-              : status == "Success" ? AppColor.navy
+              : status == "Success" ? AppColor.orange
               : status == "Check_In" ? AppColor.forText
               : status == "OverTime" ? AppColor.forText
               : status == "Check_Out" ? AppColor.orange

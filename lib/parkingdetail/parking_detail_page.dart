@@ -28,6 +28,14 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
   final int _currentImage = 0;
   late PageController _imageController;
 
+  String moneyFormat(double number) {
+    String formattedNumber = number.toStringAsFixed(0); // Convert double to string and remove decimal places
+    return formattedNumber.replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]} ',
+    );
+  }
+
   @override
   void initState() {
     //Add ID in here
@@ -98,9 +106,7 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   imageUrls.isNotEmpty ? ParkingImage(imageUrls: imageUrls) : SizedBox(height: MediaQuery.of(context).size.height / 4, width: double.infinity),
-
                   const SizedBox(height: 8,),
                   //Parking Info
                   Container(
@@ -213,6 +219,18 @@ class _ParkingDetailPageState extends State<ParkingDetailPage> {
                             const Divider(thickness: 1, color: AppColor.fadeText,),
                             const SizedBox(height: 5,),
                             createTable(carPrice),
+                            const SizedBox(height: 5,),
+                            const Divider(thickness: 1, color: AppColor.navyPale,),
+                            const SizedBox(height: 5,),
+                            Row(
+                              children: [
+                                const MediumText(text: 'Giá tiền phạt ', fontSize: 14, color: AppColor.forText),
+                                SemiBoldText(text: '${moneyFormat(carPrice.parkingPrice!.penaltyPrice!)}đ', fontSize: 16, color: AppColor.navy),
+                                // const SizedBox(width: 5,),
+                                const MediumText(text: ', cộng thêm sau mỗi ', fontSize: 14, color: AppColor.forText),
+                                SemiBoldText(text: '${carPrice.parkingPrice!.penaltyPriceStepTime} tiếng', fontSize: 16, color: AppColor.navy),
+                              ],
+                            )
                           ],
                         ) : const SizedBox(),
 

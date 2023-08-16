@@ -66,7 +66,7 @@ class _ActivityPageState extends State<ActivityPage>
             indicatorColor: AppColor.orange,
             labelColor: AppColor.forText,
             tabs: const [
-              Tab(text: "Upcoming"),
+              Tab(text: "Đang diễn ra"),
               Tab(text: "Lịch sử"),
             ],
           ),
@@ -154,20 +154,7 @@ class _ActivityPageState extends State<ActivityPage>
                       return const EmptyBooking();
                     }
                 ),
-                // RefreshIndicator(
-                //   onRefresh: _refreshData,
-                //   child: ListView.builder(
-                //     padding: const EdgeInsets.only(
-                //         top: 10, bottom: 20, left: 15, right: 15),
-                //     itemBuilder: (context, index) {
-                //       return const Padding(
-                //         padding: EdgeInsets.only(top: 16.0),
-                //         child: ActivityCard(),
-                //       );
-                //     },
-                //     itemCount: 5,
-                //   ),
-                // ),
+
               ],
             ),
           ),

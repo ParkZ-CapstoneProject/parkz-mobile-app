@@ -17,8 +17,10 @@ import 'package:parkz/utils/constanst.dart';
 import 'package:parkz/utils/preference_manager.dart';
 import 'package:parkz/utils/text/regular.dart';
 import 'package:parkz/utils/text/semi_bold.dart';
+import 'package:provider/provider.dart';
 
 import '../model/rating_home_response.dart';
+import '../utils/warning__flag_provider.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -29,6 +31,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   String? address;
   double? long;
   double? lat;
@@ -40,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getAddress();
     getLatLong();
-    checkBan();
+    checkBan(context);
   }
   void getAddress() async {
     String? storedAddress = await PreferenceManager.getAddress();
@@ -58,9 +61,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void checkBan() async {
+  void checkBan(context) async {
     int banCount = await getNumberOfViolations();
+    final warningFlagProvider = Provider.of<WarningFlagProvider>(context, listen: false);
+
     if(banCount == 1){
+      if (warningFlagProvider.isWarning == true){
+        return;
+      }
       AwesomeDialog(
         context: context,
         dialogType: DialogType.warning,
@@ -68,7 +76,10 @@ class _HomePageState extends State<HomePage> {
         title: 'Thông báo',
         desc: 'Chúng tôi xin thông báo rằng nếu bạn tiếp tục không đến bãi xe theo lịch đặt, chúng tôi sẽ phải ngưng sử dụng dịch vụ của bạn để duy trì công bằng và đảm bảo tính sẵn sàng cho tất cả người dùng.',
         btnOkOnPress: () {
+          warningFlagProvider.setWarningFlag(true);
         },
+        dismissOnBackKeyPress: false,
+        dismissOnTouchOutside: false,
       ).show();
     }
     if(banCount > 1){
@@ -83,10 +94,8 @@ class _HomePageState extends State<HomePage> {
           storage.delete(key: 'userID');
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const AuthenticationPage() ), (route) => false,);
         },
-        onDismissCallback: (type) {
-          storage.delete(key: 'token');
-          storage.delete(key: 'userID');
-        },
+        dismissOnBackKeyPress: false,
+        dismissOnTouchOutside: false,
       ).show();
     }
 

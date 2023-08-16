@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:coupon_uikit/coupon_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,6 +7,7 @@ import 'package:gallery_saver/gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:parkz/activity/component/status_tag.dart';
+import 'package:parkz/booking/component/countdown_button.dart';
 import 'package:parkz/booking/component/my_seperator.dart';
 import 'package:parkz/bottombar/bottombar_page.dart';
 import 'package:parkz/utils/button/button_widget.dart';
@@ -30,6 +33,7 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
+
   String moneyFormat(double number) {
     String formattedNumber = number.toStringAsFixed(0); // Convert double to string and remove decimal places
     return formattedNumber.replaceAllMapped(
@@ -42,8 +46,12 @@ class _BookingPageState extends State<BookingPage> {
     setState(() {});
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
+
     return RefreshIndicator(
       onRefresh: _refreshData,
       child: FutureBuilder<BookingDetailResponse>(
@@ -96,28 +104,7 @@ class _BookingPageState extends State<BookingPage> {
                     children: [
                       // Nut huy đơn
                       booking.bookingDetails!.status == 'Initial' || booking.bookingDetails!.status == 'Success'
-                      ? Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                            child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: AppColor.orange, width: 2),
-                                  shape:  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  cancelBooking(widget.bookingId, context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>  const MyBottomBar(selectedInit: 0,)),
-                                  );
-                                },
-                                child:  const SemiBoldText(text: 'Hủy đơn', fontSize: 13, color: Colors.white)
-                            ),
-                          )
-                      )
+                      ? CountDownButton(bookingId: widget.bookingId)
                       : const SizedBox(),
 
                       booking.bookingDetails!.status == 'Done' && booking.bookingDetails!.isRating == false ?
@@ -217,9 +204,9 @@ class _BookingPageState extends State<BookingPage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const RegularText(text: 'Dự kiến vào bãi lúc: ', fontSize: 15, color: AppColor.forText),
+                                      const RegularText(text: 'Dự kiến vào bãi lúc: ', fontSize: 14, color: AppColor.forText),
                                       SemiBoldText(text: DateFormat('HH:mm - dd/MM/yyyy').format(booking.bookingDetails!.startTime!).toString(),
-                                          fontSize: 17,
+                                          fontSize: 15,
                                           color: AppColor.navy)
                                     ],
                                   ),
@@ -227,10 +214,10 @@ class _BookingPageState extends State<BookingPage> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const RegularText(text: 'Dự kiến rời bãi lúc: ', fontSize: 15, color: AppColor.forText),
+                                      const RegularText(text: 'Dự kiến rời bãi lúc: ', fontSize: 14, color: AppColor.forText),
                                       const SizedBox(width: 10,),
                                       SemiBoldText(text: DateFormat('HH:mm - dd/MM/yyyy').format(booking.bookingDetails!.endTime!).toString(),
-                                          fontSize: 17,
+                                          fontSize: 15,
                                           color: AppColor.navy)
                                     ],
                                   )
@@ -327,6 +314,19 @@ class _BookingPageState extends State<BookingPage> {
                                       color: AppColor.forText),
                                   SemiBoldText(
                                       text: booking.vehicleInfor!.vehicleName!,
+                                      fontSize: 14,
+                                      color: AppColor.forText)
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children:  [
+                                  const MediumText(
+                                      text: 'Màu xe',
+                                      fontSize: 14,
+                                      color: AppColor.forText),
+                                  SemiBoldText(
+                                      text: booking.vehicleInfor!.color!,
                                       fontSize: 14,
                                       color: AppColor.forText)
                                 ],

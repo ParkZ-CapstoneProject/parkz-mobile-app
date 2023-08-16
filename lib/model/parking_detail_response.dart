@@ -62,7 +62,7 @@ class Parking {
   final String? address;
   final String? description;
   final double? stars;
-  final dynamic totalStars;
+  final double? totalStars;
   final int? starsCount;
   final int? motoSpot;
   final int? carSpot;
@@ -95,7 +95,7 @@ class Parking {
     address: json["address"],
     description: json["description"],
     stars: json["stars"]?.toDouble(),
-    totalStars: json["totalStars"],
+    totalStars: json["totalStars"]?.toDouble(),
     starsCount: json["starsCount"],
     motoSpot: json["motoSpot"],
     carSpot: json["carSpot"],
@@ -147,6 +147,8 @@ class ParkingPrice {
   final Traffic? traffic;
   final int? extraTimeStep;
   final List<TimeLine>? timeLines;
+  final double? penaltyPrice;
+  final int? penaltyPriceStepTime;
 
   ParkingPrice({
     this.parkingPriceId,
@@ -155,6 +157,8 @@ class ParkingPrice {
     this.traffic,
     this.extraTimeStep,
     this.timeLines,
+    this.penaltyPrice,
+    this.penaltyPriceStepTime,
   });
 
   factory ParkingPrice.fromJson(Map<String, dynamic> json) => ParkingPrice(
@@ -164,6 +168,8 @@ class ParkingPrice {
     traffic: json["traffic"] == null ? null : Traffic.fromJson(json["traffic"]),
     extraTimeStep: json["extraTimeStep"],
     timeLines: json["timeLines"] == null ? [] : List<TimeLine>.from(json["timeLines"]!.map((x) => TimeLine.fromJson(x))),
+    penaltyPrice: json["penaltyPrice"]?.toDouble(),
+    penaltyPriceStepTime: json["penaltyPriceStepTime"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -173,6 +179,8 @@ class ParkingPrice {
     "traffic": traffic?.toJson(),
     "extraTimeStep": extraTimeStep,
     "timeLines": timeLines == null ? [] : List<dynamic>.from(timeLines!.map((x) => x.toJson())),
+    "penaltyPrice": penaltyPrice,
+    "penaltyPriceStepTime": penaltyPriceStepTime,
   };
 }
 
