@@ -155,13 +155,16 @@ class _OtpPageState extends State<OtpPage> with CodeAutoFill {
                               }
                               LoginResponse reponse = await login(AuthenticationPage.phone);
                               Utils(context).stopLoading();
-                              if(reponse.data == null){
-                                await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const CardIdentificationPage()),);
+                              if(reponse.statusCode != null && reponse.statusCode! >= 400){
+                                Utils(context).showErrorSnackBar(reponse.message);
+                              }else{
+                                if(reponse.data == null){
+                                  await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const CardIdentificationPage()),);
+                                }
+                                else {
+                                  await Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MyBottomBar(selectedInit: 0)),(route) => false,);
+                                }
                               }
-                              else {
-                                await Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MyBottomBar(selectedInit: 0)),(route) => false,);
-
-                              };
                             }catch(e){
                               Utils(context).stopLoading();
                               Utils(context).showErrorSnackBar('Mã OTP không hợp lệ');

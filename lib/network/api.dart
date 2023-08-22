@@ -143,8 +143,13 @@ Future<LoginResponse> login(phone) async {
       }
       return loginResponse;
     } else {
-      throw Exception(
-          'Failed to login. Status code: ${response.statusCode}');
+      if(response.statusCode >= 400 && response.statusCode <500){
+        final responseJson = jsonDecode(utf8.decode(response.bodyBytes));
+        final LoginResponse loginResponse = LoginResponse.fromJson(responseJson);
+        return loginResponse;
+      }
+
+      throw Exception('Failed to login. Status code: ${response.statusCode}');
     }
   }catch (e) {
     throw Exception('Fail to login: $e');
