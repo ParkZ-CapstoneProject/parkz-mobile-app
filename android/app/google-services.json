@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "825115203554",
+    "project_id": "parkz-f1bd0",
+    "storage_bucket": "parkz-f1bd0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825115203554:android:e27e61e68a4174f30c8bbb",
+        "android_client_info": {
+          "package_name": "com.example.parkz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "825115203554-ssnf8s3mnjiafopiel5uhk8c0ge61ftr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_pfWsCpROAvf_an54q0cUxoS_0U1dFhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "825115203554-pri1uiqgvps7tpmprethgpsts3c31s75.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

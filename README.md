@@ -16,6 +16,7 @@ The "Find Parking" app - **PARKZ**, built with Flutter, is a convenient solution
 
 **Graduation Project:** This app is the result of a graduation project that was conceptualized and completed in 14 weeks. The project was a collaborative effort by a team of four individuals, with Tran Ngoc Thang playing the main role in coding this mobile app.
 
+![alt text](https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/mockup.png?raw=true)
 
 
 ## Features
@@ -83,6 +84,18 @@ To run the app and make use of Firebase services, follow these steps:
         - Download the `GoogleService-Info.plist` file from Firebase and place it in the `ios/Runner` directory of your Flutter project.
 
 ## Application preview
+
+<div align="center">
+  <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/home.jpg?raw=true" alt="Customer Mobile Login" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_home.png" alt="Customer Mobile Home" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_history.png" alt="Customer Mobile Order History" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_rating.png" alt="Customer Mobile Order Rating" width="25%"></img>
+</div>
+
+<div align="center">
+  <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/map.jpg?raw=true" alt="Customer Mobile Login" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_home.png" alt="Customer Mobile Home" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_history.png" alt="Customer Mobile Order History" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_rating.png" alt="Customer Mobile Order Rating" width="25%"></img>
+</div>
+
+<div align="center">
+  <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/qr.jpg?raw=true" alt="Customer Mobile Login" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_home.png" alt="Customer Mobile Home" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_history.png" alt="Customer Mobile Order History" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_rating.png" alt="Customer Mobile Order Rating" width="25%"></img>
+</div>
 
 ## Contributing
 - **Trần Ngọc Thắng** - Leader
