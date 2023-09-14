@@ -36,14 +36,12 @@ class _HomePageState extends State<HomePage> {
   double? long;
   double? lat;
 
-
-
   @override
   void initState() {
-    super.initState();
     getAddress();
     getLatLong();
     checkBan(context);
+    super.initState();
   }
   void getAddress() async {
     String? storedAddress = await PreferenceManager.getAddress();
@@ -55,10 +53,12 @@ class _HomePageState extends State<HomePage> {
     double? storeLat = await PreferenceManager.getLatitude();
     double? storeLong = await PreferenceManager.getLongitude();
 
-    setState(() {
-      lat = storeLat;
-      long = storeLong;
-    });
+    if(storeLat != null && storeLong != null){
+      setState(() {
+        lat = storeLat;
+        long = storeLong;
+      });
+    }
   }
 
   void checkBan(context) async {
@@ -218,6 +218,7 @@ class _HomePageState extends State<HomePage> {
                             }
                           }
                           if(snapshot.hasError){
+                            debugPrint('Error: ${snapshot.error}');
                               return const SizedBox(
                               width: double.infinity,
                               height: 310,

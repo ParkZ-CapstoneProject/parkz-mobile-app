@@ -1,16 +1,108 @@
-# parkz
+# PARKZ - Find Parking App (Flutter)
 
-A finding parking mobile
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Application preview](#application-preview)
+- [Contributing](#contributing)
+- [For More Information](#for-more-information)
+
+
+## Introduction
+
+The "Find Parking" app - **PARKZ**, built with Flutter, is a convenient solution for drivers who often face the challenge of finding available parking spaces, especially in busy urban areas. This repository contains the source code for the Flutter-based app, allowing you to deploy and customize it according to your specific needs.
+
+**Graduation Project:** This app is the result of a graduation project that was conceptualized and completed in 14 weeks. The project was a collaborative effort by a team of four individuals, with Tran Ngoc Thang playing the main role in coding this mobile app.
+
+
+
+## Features
+
+- **Find Parking Based on Destination:** Our app simplifies the parking process by suggesting nearby parking options based on the user's specified destination. Say goodbye to endless searching for a parking spot!
+
+- **Real-Time Parking Information:** Access up-to-date information on parking availability, pricing, and the precise location of parking facilities. No more guessing games.
+
+- **Reservation and Booking:** Reserve parking spots in advance to ensure a hassle-free parking experience. Enjoy peace of mind knowing you have a guaranteed spot waiting for you.
+
+- **QR Code Integration:** Seamlessly check in and check out of parking locations using QR codes. It's quick, secure, and efficient.
+
+- **User Profile Management:** Create and manage user profiles with ease. Store your preferences and payment methods for a smoother user experience.
+
+- **Notification System:** Stay informed with timely notifications about your reservations, bookings, and important updates. We keep you in the loop.
+
+- **User Ratings:** Share your parking experiences by rating and reviewing parking spots. Help fellow drivers make informed decisions.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+Before you begin, make sure you have the following prerequisites installed:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Flutter](https://docs.flutter.dev/get-started/install/windows)
+- [Git](https://github.com/git-guides/install-git)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Installation
+
+1. Clone the repository:
+
+   ```shell
+   git clone https://github.com/ParkZ-CapstoneProject/parkz-mobile-app.git
+   ```
+1. Navigate to the project directory:
+
+   ```shell
+   cd parkz-mobile-app
+   ```
+1. Install dependencies:
+
+   ```shell
+    flutter pub get
+   ```
+1. Connect to a real or emulated mobile device then:
+    ```shell
+    flutter run
+   ```
+### Configuration
+
+To run the app and make use of Firebase services, follow these steps:
+
+1. **Create a Firebase Project:**
+    - Go to the [Firebase Console](https://console.firebase.google.com/).
+    - Click on "Add project" and follow the setup instructions to create a new Firebase project.
+
+2. **Add Your App to Firebase:**
+    - In the Firebase project dashboard, click on "Add app" and select the appropriate platform (iOS/Android).
+    - Follow the on-screen instructions to register your app. This will provide you with configuration files.
+
+3. **Integrate Firebase Configuration Files:**
+    - For Android:
+        - Download the `google-services.json` file from Firebase and place it in the `android/app` directory of your Flutter project.
+    - For iOS:
+        - Download the `GoogleService-Info.plist` file from Firebase and place it in the `ios/Runner` directory of your Flutter project.
+
+## Application preview
+
+## Contributing
+- **Trần Ngọc Thắng** - Leader
+    - Role: Business Analyst, Mobile Developer, Database Designer, App Designer, Scrum Master
+
+- **Trần Thành Đạt**
+    - Role: Scrum Master, Backend Developer
+
+- **Trương Công Chính**
+    - Role: Backend Developer
+
+- **Đỗ Anh Linh**
+    - Role: Frontend Developer, Web Designer
+
+- **Ms. Nguyễn Thị Cẩm Hương**
+    - Role: Supervisor
+
+## For More Information
+
+For detailed information about the "PARKZ - Find Parking" app, its development process, please refer to the [project documentation](https://docs.google.com/document/d/1pGVQFGTXT_5H8IZ2BTEgM5QbLJEohTK1xgvoX5d4AFg/edit?usp=sharing).
+
+
+

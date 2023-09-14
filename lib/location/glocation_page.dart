@@ -229,7 +229,7 @@ class _GLocationPageState extends State<GLocationPage> {
                                   if (destination != null) {
                                     double desLat = double.parse(destination!.lat!);
                                     double long = double.parse(destination!.lon!);
-                                     parkingNearby =  await getParkingNearbyDestination(desLat, long, 3);
+                                     parkingNearby =  await getParkingNearbyDestination(desLat, long, 4);
                                     setState(()  {
                                       _searchController.text = destination!.displayName!;
                                       //Move camera to location

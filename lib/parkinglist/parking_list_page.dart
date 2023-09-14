@@ -32,7 +32,6 @@ class ParkingListPage extends StatelessWidget {
             if(snapshot.data!.data!.isNotEmpty){
               return  ListView.builder(
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return ParkingCardHome(
                     title: snapshot.data!.data![index].parkingShowInCusDto!.name!,

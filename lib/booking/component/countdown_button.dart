@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:parkz/utils/warning__flag_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../bottombar/bottombar_page.dart';
 import '../../network/api.dart';
@@ -22,9 +24,17 @@ class _CountDownButtonState extends State<CountDownButton> {
 
   @override
   void initState() {
+     _timer = Timer(Duration.zero, () { });
     super.initState();
-    startTimer();
-  }
+    if (context.read<WarningFlagProvider>().containsBookingId(widget.bookingId)) {
+      // If the booking ID already exists, hide the button
+      setState(() {
+        isVisible = false;
+      });
+    } else {
+      // If the booking ID doesn't exist, start the timer
+      startTimer();
+    }  }
 
   void startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -36,6 +46,7 @@ class _CountDownButtonState extends State<CountDownButton> {
         timer.cancel();
         setState(() {
           isVisible = false;
+          context.read<WarningFlagProvider>().addBookingId(widget.bookingId);
         });
       }
     });

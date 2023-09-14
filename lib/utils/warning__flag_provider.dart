@@ -9,4 +9,24 @@ class WarningFlagProvider with ChangeNotifier {
     _isWarning = value;
     notifyListeners();
   }
+
+   final List<int> _bookingIds = [];
+
+  void addBookingId(int id) {
+    if (!_bookingIds.contains(id)) {
+      _bookingIds.add(id);
+      notifyListeners();
+    }
+  }
+
+  void removeBookingId(int id) {
+    _bookingIds.remove(id);
+    notifyListeners();
+  }
+
+  bool containsBookingId(int id) {
+    return _bookingIds.contains(id);
+  }
+
+
 }

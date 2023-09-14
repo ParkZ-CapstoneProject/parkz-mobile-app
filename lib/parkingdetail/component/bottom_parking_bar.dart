@@ -433,7 +433,7 @@ class _BottomParkingBarState extends State<BottomParkingBar> {
                       itemCount: 24, // Set the total number of items
                       itemBuilder: (BuildContext context, int index) {
                         int hour = index;
-                        if (hour <= currentDate.hour && selectedDayCalendar?.day == currentDate.day && hour != 0) {
+                        if (hour < currentDate.hour && selectedDayCalendar?.day == currentDate.day) {
                           return const SizedBox(); // Skip rendering for hours in the past
                         }
                         return InkWell(

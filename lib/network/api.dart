@@ -160,19 +160,25 @@ Future<LoginResponse> login(phone) async {
 }
 
 // Lấy bãi xe gần bạn
-Future<NearestParkingResponse> getNearestParking(
-    double? lat, double? long) async {
+Future<NearestParkingResponse> getNearestParking(double? lat, double? long) async {
   try {
-    final response = await http.get(Uri.parse(
-        '$host/api/parking-nearest?currentLatitude=$lat&currentLongtitude=$long'));
-
-    if (response.statusCode == 200) {
-      final responseJson = jsonDecode(response.body);
-      return NearestParkingResponse.fromJson(responseJson);
-    } else {
-      throw Exception(
-          'Failed to fetch nearest parking list. Status code: ${response.statusCode}');
+    if(lat != null && long != null){
+      debugPrint('------Get Nearest Parking ------------');
+      debugPrint('------lat: $lat ------------');
+      debugPrint('------long: $long ------------');
+      final response = await http.get(
+        Uri.parse('$host/api/parking-nearest?currentLatitude=$lat&currentLongtitude=$long'),
+        headers: {'accept': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        final responseJson = jsonDecode(response.body);
+        return NearestParkingResponse.fromJson(responseJson);
+      } else {
+        throw Exception(
+            'Failed to fetch nearest parking list. Status code: ${response.statusCode}');
+      }
     }
+    throw Exception('Fail to get nearest parking list: null');
   } catch (e) {
     throw Exception('Fail to get nearest parking list: $e');
   }
