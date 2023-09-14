@@ -86,7 +86,9 @@ To run the app and make use of Firebase services, follow these steps:
 ## Application preview
 
 <div align="center">
-  <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/home.jpg?raw=true" alt="Customer Mobile Login" width="25%"> &nbsp;&nbsp; <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/map.jpg?raw=true" alt="Customer Mobile Map" width="25%"> &nbsp;&nbsp; <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/qr.jpg?raw=true" alt="Customer Mobile QR" width="25%"> &nbsp;&nbsp; 
+<img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/home.jpg?raw=true" alt="Customer Mobile Login" width="30%"> &nbsp;&nbsp;&nbsp;
+<img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/map.jpg?raw=true" alt="Customer Mobile Map" width="30%"> &nbsp;&nbsp;&nbsp;
+<img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/qr.jpg?raw=true" alt="Customer Mobile QR" width="30%"> &nbsp;&nbsp; 
 </div>
 
 
