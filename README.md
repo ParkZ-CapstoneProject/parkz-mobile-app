@@ -86,16 +86,9 @@ To run the app and make use of Firebase services, follow these steps:
 ## Application preview
 
 <div align="center">
-  <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/home.jpg?raw=true" alt="Customer Mobile Login" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_home.png" alt="Customer Mobile Home" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_history.png" alt="Customer Mobile Order History" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_rating.png" alt="Customer Mobile Order Rating" width="25%"></img>
+  <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/home.jpg?raw=true" alt="Customer Mobile Login" width="25%"> &nbsp;&nbsp; <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/map.jpg?raw=true" alt="Customer Mobile Map" width="25%"> &nbsp;&nbsp; <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/qr.jpg?raw=true" alt="Customer Mobile QR" width="25%"> &nbsp;&nbsp; 
 </div>
 
-<div align="center">
-  <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/map.jpg?raw=true" alt="Customer Mobile Login" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_home.png" alt="Customer Mobile Home" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_history.png" alt="Customer Mobile Order History" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_rating.png" alt="Customer Mobile Order Rating" width="25%"></img>
-</div>
-
-<div align="center">
-  <img src="https://github.com/ParkZ-CapstoneProject/parkz-mobile-app/blob/main/screenshot/qr.jpg?raw=true" alt="Customer Mobile Login" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_home.png" alt="Customer Mobile Home" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_history.png" alt="Customer Mobile Order History" width="25%"></img> &nbsp;&nbsp; <img src="https://raw.githubusercontent.com/fptu-team-404-not-found/co_tam_houseworker_mobile/main/document/imgs/customer_mobile_order_rating.png" alt="Customer Mobile Order Rating" width="25%"></img>
-</div>
 
 ## Contributing
 - **Trần Ngọc Thắng** - Leader
